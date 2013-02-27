@@ -9,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Rect;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -43,6 +44,26 @@ public class TableauView extends View {
             mCanvasPaint.setAntiAlias(false);
             mCanvasPaint.setFilterBitmap(false);
 
+    }
+    
+    public TableauView(Context context, AttributeSet attrs){
+        super(context, attrs);
+
+        mCanvasPaint = new Paint();
+        mCanvasPaint.setColor(0xFF228B22); // Green background
+        mCanvasPaint.setAntiAlias(false);
+        mCanvasPaint.setFilterBitmap(false);
+    	
+    }
+    
+    public TableauView(Context context, AttributeSet attrs, int defStyle){
+        super(context, attrs, defStyle);
+
+        mCanvasPaint = new Paint();
+        mCanvasPaint.setColor(0xFF228B22); // Green background
+        mCanvasPaint.setAntiAlias(false);
+        mCanvasPaint.setFilterBitmap(false);
+    	
     }
 
     @Override
