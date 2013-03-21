@@ -37,12 +37,12 @@ public class TableauView extends View {
     private Card mActiveCard;
 
     public TableauView(Context context) {
-            super(context);
+    	super(context);
 
-            mCanvasPaint = new Paint();
-            mCanvasPaint.setColor(0xFF228B22); // Green background
-            mCanvasPaint.setAntiAlias(false);
-            mCanvasPaint.setFilterBitmap(false);
+    	mCanvasPaint = new Paint();
+    	mCanvasPaint.setColor(0xFF228B22); // Green background
+    	mCanvasPaint.setAntiAlias(false);
+    	mCanvasPaint.setFilterBitmap(false);
 
     }
     
@@ -196,6 +196,7 @@ public class TableauView extends View {
             // Add cards to the source decks
             Random random = new Random();
             if (mSourceDecks.size() == 0) {
+            		//<<Team 4 comment>-Initialize stacks in the Tableau
                     Deck deck = new Deck(Deck.DeckType.ESource, mCardCap * 4, cy,
                                     mCardSize.width(), mCardSize.height());
                     Card c = mCards.remove(random.nextInt(mCards.size()));
@@ -422,7 +423,7 @@ public class TableauView extends View {
                             // Handle all other card move
                             if (toDeck!=null) {
                                     if (toDeck.mDeckType == Deck.DeckType.ESource) {
-                                            topOfOtherCards = false; // Drawed exactly top of other cards in the deck
+                                            topOfOtherCards = false; // Drawn exactly top of other cards in the deck
                                     }
                                     // Accept card move or not?
                                     if (acceptCardMove(fromDeck, toDeck, mActiveCard)) {
@@ -471,7 +472,7 @@ public class TableauView extends View {
             if (from == to)
                     return false;
 
-            // Check cars issuess
+            // Check card issues
             if(to.mCards.size()>0) {
                     if (to.mDeckType == Deck.DeckType.ESource) {
                             // Card can be top of one step greater card and different color

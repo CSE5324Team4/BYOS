@@ -65,7 +65,8 @@ public class Card {
             // Bitmaps
             Bitmap tmp = BitmapFactory.decodeResource(res, R.raw.cardback);
             mBackBitmap = Bitmap.createScaledBitmap(tmp, mWidth, mHeight, true);
-            tmp = BitmapFactory.decodeResource(res, bmpResId, options);
+            tmp = BitmapFactory.decodeResource(res, bmpResId);
+            //tmp = BitmapFactory.decodeResource(res, bmpResId, options);  //<----Team 4 comment this is what was causing the cards to look ugly
             mBitmap = Bitmap.createScaledBitmap(tmp, mWidth, mHeight, true);
             tmp = null;
     }
