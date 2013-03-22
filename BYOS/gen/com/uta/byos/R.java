@@ -21,21 +21,27 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
     public static final class color {
         public static final int black_overlay=0x7f050000;
     }
+    public static final class dimen {
+        public static final int top=0x7f060000;
+    }
     public static final class drawable {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int gameBuilder1=0x7f090000;
-        public static final int menu_settings=0x7f090002;
-        public static final int tableauView1=0x7f090001;
+        public static final int editTextDialogUserInput=0x7f0a0003;
+        public static final int gameBuilder1=0x7f0a0000;
+        public static final int menu_settings=0x7f0a0004;
+        public static final int tableauView1=0x7f0a0001;
+        public static final int textView1=0x7f0a0002;
     }
     public static final class layout {
         public static final int activity_game=0x7f030000;
         public static final int activity_tableau=0x7f030001;
+        public static final int stackedit=0x7f030002;
     }
     public static final class menu {
-        public static final int activity_game=0x7f080000;
-        public static final int activity_tableau=0x7f080001;
+        public static final int activity_game=0x7f090000;
+        public static final int activity_tableau=0x7f090001;
     }
     public static final class raw {
         public static final int cardback=0x7f040000;
@@ -79,28 +85,30 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int heart7=0x7f040026;
         public static final int heart8=0x7f040027;
         public static final int heart9=0x7f040028;
-        public static final int spade1=0x7f040029;
-        public static final int spade10=0x7f04002a;
-        public static final int spade11=0x7f04002b;
-        public static final int spade12=0x7f04002c;
-        public static final int spade13=0x7f04002d;
-        public static final int spade2=0x7f04002e;
-        public static final int spade3=0x7f04002f;
-        public static final int spade4=0x7f040030;
-        public static final int spade5=0x7f040031;
-        public static final int spade6=0x7f040032;
-        public static final int spade7=0x7f040033;
-        public static final int spade8=0x7f040034;
-        public static final int spade9=0x7f040035;
+        public static final int recyclebin=0x7f040029;
+        public static final int spade1=0x7f04002a;
+        public static final int spade10=0x7f04002b;
+        public static final int spade11=0x7f04002c;
+        public static final int spade12=0x7f04002d;
+        public static final int spade13=0x7f04002e;
+        public static final int spade2=0x7f04002f;
+        public static final int spade3=0x7f040030;
+        public static final int spade4=0x7f040031;
+        public static final int spade5=0x7f040032;
+        public static final int spade6=0x7f040033;
+        public static final int spade7=0x7f040034;
+        public static final int spade8=0x7f040035;
+        public static final int spade9=0x7f040036;
     }
     public static final class string {
-        public static final int app_name=0x7f060000;
-        public static final int dummy_button=0x7f060002;
-        public static final int dummy_content=0x7f060001;
-        public static final int hello_world=0x7f060003;
-        public static final int menu_settings=0x7f060004;
-        public static final int title_activity_game=0x7f060006;
-        public static final int title_activity_tableau=0x7f060005;
+        public static final int app_name=0x7f070000;
+        public static final int dummy_button=0x7f070002;
+        public static final int dummy_content=0x7f070001;
+        public static final int hello_world=0x7f070003;
+        public static final int how_many_cards=0x7f070007;
+        public static final int menu_settings=0x7f070004;
+        public static final int title_activity_game=0x7f070006;
+        public static final int title_activity_tableau=0x7f070005;
     }
     public static final class style {
         /** 
@@ -127,15 +135,15 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
     
  API 14 theme customizations can go here. 
          */
-        public static final int AppBaseTheme=0x7f070000;
+        public static final int AppBaseTheme=0x7f080000;
         /**  Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
          */
-        public static final int AppTheme=0x7f070001;
-        public static final int ButtonBar=0x7f070003;
-        public static final int ButtonBarButton=0x7f070002;
-        public static final int FullscreenActionBarStyle=0x7f070005;
-        public static final int FullscreenTheme=0x7f070004;
+        public static final int AppTheme=0x7f080001;
+        public static final int ButtonBar=0x7f080003;
+        public static final int ButtonBarButton=0x7f080002;
+        public static final int FullscreenActionBarStyle=0x7f080005;
+        public static final int FullscreenTheme=0x7f080004;
     }
     public static final class styleable {
         /** 
