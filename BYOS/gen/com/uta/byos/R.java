@@ -37,11 +37,13 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
     public static final class layout {
         public static final int activity_game=0x7f030000;
         public static final int activity_tableau=0x7f030001;
-        public static final int stackedit=0x7f030002;
+        public static final int activity_test=0x7f030002;
+        public static final int stackedit=0x7f030003;
     }
     public static final class menu {
         public static final int activity_game=0x7f090000;
         public static final int activity_tableau=0x7f090001;
+        public static final int activity_test=0x7f090002;
     }
     public static final class raw {
         public static final int cardback=0x7f040000;
@@ -107,8 +109,10 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int hello_world=0x7f070003;
         public static final int how_many_cards=0x7f070007;
         public static final int menu_settings=0x7f070004;
+        public static final int switch_mode=0x7f070008;
         public static final int title_activity_game=0x7f070006;
         public static final int title_activity_tableau=0x7f070005;
+        public static final int title_activity_test=0x7f070009;
     }
     public static final class style {
         /** 

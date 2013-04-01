@@ -27,6 +27,11 @@ public class TableauView extends View {
     private int cardXCap;
     private int cardYCap;
     private int mCardCap;
+    
+    private String ruleBook = "o";
+    
+//    private final int DEAL_INT = 1;
+//    private final char BUILD_RULE = 'o';  //<Team 4 comment> These two fields are for demonstration purposes only 
 
     private ArrayList<Deck> mSourceDecks = new ArrayList<Deck>();
     private ArrayList<Deck> mTargetDecks = new ArrayList<Deck>();
@@ -458,7 +463,7 @@ public class TableauView extends View {
             }
 
             // Check deck issuess
-            if (topOfThisCard!=null && topOfThisCard.mTurned==false) {
+            if (topOfThisCard!=null && !topOfThisCard.mTurned) {
                     return false;
             }
            
@@ -474,31 +479,65 @@ public class TableauView extends View {
 
             // Check card issues
             if(to.mCards.size()>0) {
-                    if (to.mDeckType == Deck.DeckType.ESource) {
-                            // Card can be top of one step greater card and different color
-            // Card can not be same color
-            if (card.mCardLand == topOfThisCard.mCardLand || topOfThisCard.mCardValue != card.mCardValue + 1 || card.mBlack == topOfThisCard.mBlack)
-                return false;
-                    } else if (to.mDeckType == Deck.DeckType.ETarget) {
-            // Cards must be in ascending order and same suite in 2 target deck
-            if (topOfThisCard.mCardValue + 1 != card.mCardValue || topOfThisCard.mCardLand != card.mCardLand)
-                return false;
-                    }
+            	if (to.mDeckType == Deck.DeckType.ESource) {           		
+            		if (!checkTableauMove(card, topOfThisCard))
+            			return false;
+            	} else if (to.mDeckType == Deck.DeckType.ETarget) {
+            		// Cards must be in ascending order and same suite in 2 target deck
+            		if (!checkFoundationMove(card, topOfThisCard))
+            			return false;
+            	}
             } else {
-        // Moving top of empty deck
+            	// Moving top of empty deck
 
-        // If there is no cards in the deck, then the first one must be King card in source decks 1
-        if (to.mCards.size() == 0 &&
-                    card.mCardValue != 13 && to.mDeckType == Deck.DeckType.ESource)
-            return false;
+            	// If there is no cards in the deck, then the first one must be King card in source decks 1
+            	if (to.mCards.size() == 0 &&
+            			card.mCardValue != 13 && to.mDeckType == Deck.DeckType.ESource)
+            		return false;
 
-        // Ace card must be the first card in foundation
-        if (to.mDeckType == Deck.DeckType.ETarget && to.mCards.size() == 0 && card.mCardValue != 1)
-            return false;
+            	// Ace card must be the first card in foundation
+            	if (to.mDeckType == Deck.DeckType.ETarget && to.mCards.size() == 0 && card.mCardValue != 1)
+            		return false;
             }
 
             return true;
     }
+    
+    private boolean checkTableauMove(Card movedCard, Card toCard){
+    	if(toCard.mCardValue == movedCard.mCardValue + ruleBook.charAt(1))
+    		switch(ruleBook.charAt(0)){
+    		case 's': //If cards are to be built up in suit
+    			return movedCard.mCardLand == toCard.mCardLand;
+    		case 'c': //If cards are to be built up by the same color
+    			return movedCard.mBlack && toCard.mBlack;
+    		case 'a': //If cards are to be built up by alternating color
+    			return !(movedCard.mBlack && toCard.mBlack);
+    		case 'o': //If cards are to be built up by changing suit
+    			return movedCard.mCardLand != toCard.mCardLand;
+    		default:
+    			return false;	
+    		}
+    	else
+    		return false;
+    }
+
+    private boolean checkFoundationMove(Card movedCard, Card toCard){
+    	if(toCard.mCardValue == movedCard.mCardValue + ruleBook.charAt(3) && toCard.mOwnerDeck.mDeckType == Deck.DeckType.ETarget)
+    		switch(ruleBook.charAt(2)){
+    		case 's': //If cards are to be built up in suit
+    			return movedCard.mCardLand == toCard.mCardLand;
+    		case 'c': //If cards are to be built up by the same color
+    			return movedCard.mBlack && toCard.mBlack;
+    		case 'a': //If cards are to be built up by alternating color
+    			return !(movedCard.mBlack && toCard.mBlack);
+    		case 'o': //If cards are to be built up by changing suit
+    			return movedCard.mCardLand != toCard.mCardLand;
+    		default:
+    			return false;	
+    		}
+    	else
+    		return false;
+    }    
 
 
 }

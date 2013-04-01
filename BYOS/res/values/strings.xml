@@ -9,5 +9,7 @@
     <string name="title_activity_tableau">Tableau</string>
     <string name="title_activity_game">GameActivity</string>
     <string name="how_many_cards">How many cards?</string>
+    <string name="switch_mode">Switch mode</string>
+    <string name="title_activity_test">TestActivity</string>
 
 </resources>

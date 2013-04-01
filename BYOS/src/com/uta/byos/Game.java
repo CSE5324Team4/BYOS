@@ -14,8 +14,7 @@ public class Game {
     private Deck mWasteDeck2;
     
     //Build rules followed by play rules
-    private String sourceRules;
-    private String targetRules;
+    protected String ruleBook;
     //private int cardScale;
     
     public Game(){}
@@ -32,9 +31,36 @@ public class Game {
      * read from a file create the Game object from there.
      */
     
-    public Game(int cardScale){
-    	mWasteDeck = new Deck(Deck.DeckType.EWaste1, 0, 0, cardScale, (int) (1.5*cardScale));
+    public Game(int cardScale, int x, int y){
+    	mWasteDeck = new Deck(Deck.DeckType.EWaste1, x, y, cardScale, (int) (1.5*cardScale));
     }
+    
+    public Game(int cardScale, ArrayList<Placeholder> stack, String rules){
+    	for(Placeholder item : stack){
+    		if(item.type == Deck.DeckType.ESource)
+    			mSourceDecks.add(new Deck(item.type, item.getX(), item.getY(), cardScale, (int) 1.5*cardScale));
+    		else if(item.type == Deck.DeckType.ETarget)
+    			mTargetDecks.add(new Deck(item.type, item.getX(), item.getY(), cardScale, (int) 1.5*cardScale));
+    		else if(item.type == Deck.DeckType.EWaste1)
+    			mWasteDeck = new Deck(item.type, item.getX(), item.getY(), cardScale, (int) 1.5*cardScale);
+    		else if(item.type == Deck.DeckType.EWaste2)
+    			mWasteDeck2 = new Deck(item.type, item.getX(), item.getY(), cardScale, (int) 1.5*cardScale);}
+    	ruleBook = rules;
+    }
+    
+    public Game(GameBuilder input){
+    	for(Placeholder item : input.places){
+    		if(item.type == Deck.DeckType.ESource)
+    			mSourceDecks.add(new Deck(item.type, item.getX(), item.getY(), item.width, item.height));
+    		else if(item.type == Deck.DeckType.ETarget)
+    			mTargetDecks.add(new Deck(item.type, item.getX(), item.getY(), item.width, item.height));
+    		else if(item.type == Deck.DeckType.EWaste1)
+    			mWasteDeck = new Deck(item.type, item.getX(), item.getY(), item.width, item.height);
+    		else if(item.type == Deck.DeckType.EWaste2)
+    			mWasteDeck2 = new Deck(item.type, item.getX(), item.getY(), item.width, item.height);}
+    }
+    
+    
     
     private int getDeckCount(){
     	return deckCount;
@@ -61,11 +87,4 @@ public class Game {
     	mTargetDecks.remove(index);
     }
     
-    public void setSourceRules(String in){
-    	sourceRules = in;
-    }
-    
-    public void setTargetRules(String in){
-    	targetRules = in;
-    }
 }

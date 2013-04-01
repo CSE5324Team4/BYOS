@@ -1,20 +1,17 @@
 Building rules
 
 				ind/	mutex/	qual/	Comments
--suit			suit	1
+-suit			s		1
 -sequence		(seq)			a/d		Ascending/Descending
 -color			c		1
--alternating	ac		1
+-alternating	a		1
 color
 -other suit		o		1
--wrapping		w
--multiples		x				#		# being an integer
+-wrapping		(w)				t/f
+-multiples		(x)				#		# being an integer
 
 Playing rules (Does not apply to targetRules)
 
 -deal			d				#		0 means no redeals possible
 -topmost		t				#		Indicate rank
 
-
-"suitax3"
-"

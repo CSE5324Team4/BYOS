@@ -1,5 +1,11 @@
 package com.uta.byos;
 
+/*
+ * This class provides the "crafting tableaux" so-to-speak for the user to create his own custom card games.
+ * All javadoc was written by Matthew Waller
+ * @author Matthew Waller
+ */
+
 import java.util.ArrayList;
 
 import android.content.Context;
@@ -21,6 +27,7 @@ public class GameBuilder extends View {
 	
     private Bitmap mCacheBitmap;
     private Rect mScreenSize = new Rect();
+    private Rect cCell = new Rect();
     private boolean mUseCache = false;
 
     private Rect mCardSize = new Rect();
@@ -34,14 +41,18 @@ public class GameBuilder extends View {
     private String sType;
     private Paint typeP = new Paint();
 
-    private ArrayList<Placeholder> places = new ArrayList<Placeholder>();
-    private Placeholder mActiveStack;
-	private Placeholder menuDummyS;
-	private Placeholder menuDummyT;
+    protected ArrayList<Placeholder> places = new ArrayList<Placeholder>();
+    protected Placeholder mActiveStack;
+	protected Placeholder menuDummyS;
+	protected Placeholder menuDummyT;
 
     
-    private boolean buildInProgress;
+    private boolean buildInProgress = false;
     
+    /*
+     * Standard constructors for view objects in Android
+     * @see android.view.View
+     */
 	
     public GameBuilder(Context context) {
     	super(context);
@@ -81,6 +92,13 @@ public class GameBuilder extends View {
     	
     }
     
+    /*
+     * (non-Javadoc)
+     * Creates a new table if it is newly initialized otherwise
+     * preserves and redraws the current elements for user
+     * friendliness
+     * @see android.view.View#onSizeChanged(int, int, int, int)
+     */
     
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh){
@@ -89,6 +107,7 @@ public class GameBuilder extends View {
 		// Calculate card and decks sizes and positions
 		int cw = w / 11;
 		mCardSize.set(0, 0, cw, (int) (cw * 1.5));
+		cCell.set(0, 0, cw, h/((int) (cw*1.5)));
 		Log.v("card size", mCardSize.toString());
 
 		int freeSize = w - cw * 7;
@@ -113,6 +132,13 @@ public class GameBuilder extends View {
     	}
     }
     
+    /*
+     * (non-Javadoc)
+     * Based on Tero's original algorithm
+     * @see android.view.View#onDraw(android.graphics.Canvas)
+     * @see TableauView#onDraw
+     */
+    
     @Override
     public void onDraw(Canvas canvas) {
 
@@ -135,6 +161,11 @@ public class GameBuilder extends View {
            
 
     }
+    
+    /*
+     * Based on Tero's original algorithm
+     * @see TableauView enableCache
+     */
     private void enableCache(boolean enabled) {
     	if (enabled && !mUseCache) { //<Team 4 comment> Panaanen had this written as enabled && mUseCache != enabled
     		mActiveStack.setVisible(false);
@@ -148,6 +179,13 @@ public class GameBuilder extends View {
     	}
     	mUseCache = enabled;
     }
+    
+    /*
+     * (non-Javadoc)
+     * Handles interactivity within the view
+     * @see android.view.View#onTouchEvent(android.view.MotionEvent)
+     * @see TableauView#onTouchEvent
+     */
 	
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -158,10 +196,10 @@ public class GameBuilder extends View {
     		mActiveStack = getDeckUnderTouch(initX, initY);             
     		return true;
     	} else if (action == MotionEvent.ACTION_MOVE) {
-    		int x = (int) event.getX();
-    		int y = (int) event.getY();
+    		int x = getXCell((int) event.getX());
+    		int y = getYCell((int) event.getY());
     		if (mActiveStack != null) 
-    			mActiveStack.setPos(x - cardXCap, y - cardYCap);	
+    			mActiveStack.setPos(getXCell(x)-mCardSize.width()/2, getYCell(y)-mCardSize.height()/2);	
     		return true;
 
     	} else if (action == MotionEvent.ACTION_UP) {
@@ -180,8 +218,8 @@ public class GameBuilder extends View {
     				else
     					sType = "R";
     			}else
-    				addStack(alloc, sType, x, y);
-    		}else if(Math.abs(x-initX) < event.getXPrecision() || Math.abs(y-initY) < event.getYPrecision())
+    				addStack(alloc, sType, getXCell(x), getYCell(y));
+    		}else
     			removeUnderTouch(x, y);
     		//handleCardMove(x, y);
     		invalidate();
@@ -192,56 +230,72 @@ public class GameBuilder extends View {
 
     }
     
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event){
-    	switch(keyCode){
-    	case(KeyEvent.KEYCODE_DPAD_DOWN):
-    		if(alloc > 1)
-    			alloc--;
-    	break;
-    	case(KeyEvent.KEYCODE_DPAD_UP):
-    		if(alloc < 52)
-    			alloc++;
-    	break;
-    	}
-    	invalidate();
-    	return true;
-    }
+//    @Override
+//    public boolean onKeyUp(int keyCode, KeyEvent event){
+//    	switch(keyCode){
+//    	case(KeyEvent.KEYCODE_DPAD_DOWN):
+//    		if(alloc > 1)
+//    			alloc--;
+//    	break;
+//    	case(KeyEvent.KEYCODE_DPAD_UP):
+//    		if(alloc < 52)
+//    			alloc++;
+//    	break;
+//    	}
+//    	invalidate();
+//    	return true;
+//    }
     
-    public Placeholder getDeckForActivity(int x, int y){
-    	return getDeckUnderTouch(x, y);
-    }
+ 
+//    public Placeholder getDeckForActivity(int x, int y){
+//    	return getDeckUnderTouch(x, y);
+//    }
+    
+    /*
+     * Adds a stack to the crafting table
+     * @param s		Size of the deck to be added
+     * @param type	Any string denoting the type of deck to be added (Reserve/Waste/Foundation/Stock)
+     * @param x		Target x-coordinate
+     * @param y		Target y-coordinate
+     * @throws ArithmeticException	If there are not enough cards in the main waste or if
+     * 								there was in error with the argument to param type
+     * @see Deck#DeckType 
+     */
+    
     
     public void addStack(int s, String type, int x, int y) throws ArithmeticException{
     	Placeholder main;
     	main = places.get(0);
+    	Deck.DeckType set;
+    	switch(type.charAt(0)){
+    	case 'S':
+    		set = Deck.DeckType.EWaste1;
+    		break;
+    	case 'W':
+    		set = Deck.DeckType.EWaste2;
+    		break;
+    	case 'R':
+    		set = Deck.DeckType.ESource;
+    		break;
+    	case 'F':
+    		s = 0;
+    		set = Deck.DeckType.ETarget;
+    		break;
+    	default:
+    		throw new ArithmeticException("Not a valid deck type");
+    	}
     	if(s > main.getSize())
     		throw new ArithmeticException("Not enough cards!");
-    	else{
-    		Deck.DeckType set;
-    		switch(type.charAt(0)){
-    		case 'S':
-    			set = Deck.DeckType.EWaste1;
-    			break;
-    		case 'W':
-    			set = Deck.DeckType.EWaste2;
-    			break;
-    		case 'R':
-    			set = Deck.DeckType.ESource;
-    			break;
-    		case 'F':
-    			s = 0;
-    			set = Deck.DeckType.ETarget;
-    			break;
-    		default:
-    			throw new ArithmeticException("Not a valid deck type");
-    		}
-    		main.setSize(main.getSize() - s);
-    		places.add(new Placeholder(x, y, s, mCardSize.height(), mCardSize.width(), set, getResources()));
-    	}
+    	main.setSize(main.getSize() - s);
+    	places.add(new Placeholder(x-mCardSize.width()/2, y-mCardSize.height()/2, s, mCardSize.height(), mCardSize.width(), set, getResources()));
     }
     
-
+    /*
+     * Finds the placeholder selected the user is "touching"
+     * @param  x			X-coordinate of the click
+     * @param  y			Y-coordinate of the click
+     * @return Placeholder
+     */
 
 
     private Placeholder getDeckUnderTouch(int x, int y) {
@@ -249,6 +303,22 @@ public class GameBuilder extends View {
     		if(stack.isUnderTouch(x, y))
     			return stack;
     	return null;
+    }
+    
+    /*
+     * Finds and removes the placeholder selected by the user
+     * @param x	X-coordinate of the tap
+     * @param y	Y-coordinate of the tap
+     */
+    
+    private int getXCell(int x){
+    	int adj = x/mCardSize.width();
+    	return adj * mCardSize.width() + mCardSize.width()/2;
+    }
+    
+    private int getYCell(int y){
+    	int adj = y/mCardSize.height();
+    	return adj*mCardSize.height() + mCardSize.height()/2;
     }
     
     private void removeUnderTouch(int x, int y){
@@ -266,6 +336,23 @@ public class GameBuilder extends View {
     		}}
     }
     
+    @Override
+    public String toString(){
+    	String data = "";
+    	for(Placeholder item : places){
+    		Deck.DeckType type = item.type;
+    		if(type == Deck.DeckType.ESource)
+    			data += "R";
+    		else if(type == Deck.DeckType.ETarget)
+    			data += "F";
+    		else if(type == Deck.DeckType.EWaste1)
+    			data += "S";
+    		else
+    			data.concat("W");
+    		data += ("@" + item.getX() + "x" + item.getY() + "&" + item.getSize() + ";");
+    	}
+    	return data;
+    }
 
     
 }
