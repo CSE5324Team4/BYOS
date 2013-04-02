@@ -13,8 +13,8 @@ import android.graphics.Rect;
 
 public class Card {
 	
-    public int mWidth;
-    public int mHeight;
+    private int mWidth;
+    private int mHeight;
     private boolean mVisible = true;
     public boolean mTurned = false;
     public int mZ;
@@ -29,8 +29,8 @@ public class Card {
     private Bitmap mBackBitmap;
     private int mOldX;
     private int mOldY;
-    private int mX;
-    private int mY;
+    public int mX;
+    public int mY;
 
     public enum CardLand {
             EClub, EDiamond, ESpade, EHeart
@@ -115,6 +115,10 @@ public class Card {
                     mParentCard.setPos(x, y + mOwnerDeck.mCardTopCap, true);
             }
     }
+    
+    public void setRect(int w, int h){
+    	mRect.set(mX, mY, mX+w, mY+h);
+    }
 
     public void storePosition() {
             mOldX = mRect.left;
@@ -130,6 +134,13 @@ public class Card {
                     return true;
             else
                     return false;
+    }
+    
+    public int getX(){
+    	return mX;
+    }
+    public int getY(){
+    	return mY;
     }
 
 

@@ -8,8 +8,8 @@ import android.graphics.Rect;
 import android.util.Log;
 
 public class Deck {
-	protected int mX;
-	protected int mY;
+	private int mX;
+	private int mY;
 	public int mWidth;
 	public int mHeight;
 	protected Rect mBackgroundRect;
@@ -98,14 +98,14 @@ public class Deck {
 		} else {
 			// There is cap on top of all cards
 			// Change deck rectangle height
-			mHeight = newCard.mHeight + mCardTopCap*mCards.size();
+			mHeight = newCard.mRect.height() + mCardTopCap*mCards.size();
 			mRect = new Rect(mX,mY,mX+mWidth,mY+mHeight);
 
 			// Set card new position
 			newCard.mRect.set(mX,
 					mY + mCards.size()*mCardTopCap,
 					mX+mWidth,
-					mY + mCards.size()*mCardTopCap + newCard.mHeight);
+					mY + mCards.size()*mCardTopCap + newCard.mRect.height());
 		}
 
 
@@ -120,6 +120,20 @@ public class Deck {
 
 		// Add card
 		mCards.add(newCard);
+	}
+	
+	public void adjust(int w, int h, int oldw, int oldh){
+		mRect.set(mRect.left*w/oldw, mRect.top*h/oldh, mRect.right*w/oldw, mRect.bottom*h/oldh);
+		Card c;
+		Rect cRect;
+		for(int i = 0; i < mCards.size(); i++){
+			c = mCards.get(i);
+			cRect = c.mRect;
+			c.mX *= w/oldw;
+			c.mY *= h/oldh;
+			c.mRect.set(cRect.left*w/oldw, cRect.top*h/oldh, cRect.right*w/oldw, cRect.bottom*h/oldh);
+			mCards.set(i, c);
+		}
 	}
 
 	public void removeCard(Card removeThis) {
@@ -161,5 +175,12 @@ public class Deck {
 	public void setPos(int x, int y){
 		mX = x;
 		mY = y;
+		mRect.set(x, y, x+mRect.width(), y+mRect.height());
+	}
+	public int getX(){
+		return mX;
+	}
+	public int getY(){
+		return mY;
 	}
 }

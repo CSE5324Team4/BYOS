@@ -213,10 +213,17 @@ public class GameBuilder extends View {
     				else if(alloc > 1 && y > mScreenSize.height()*7/8)
     					alloc--;
     			}else if(Math.abs(y - mScreenSize.height()*7/8) < 32 && Math.abs(x - mScreenSize.width()/4) < 32){
-    				if(sType.equals("R"))
+    				switch(sType.charAt(0)){
+    				case 'R':
+    					sType = "W";
+    					break;
+    				case 'W':
     					sType = "F";
-    				else
+    					break;
+    				case 'F':
     					sType = "R";
+    					break;
+    				}
     			}else
     				addStack(alloc, sType, getXCell(x), getYCell(y));
     		}else
@@ -272,6 +279,7 @@ public class GameBuilder extends View {
     		set = Deck.DeckType.EWaste1;
     		break;
     	case 'W':
+    		s = 0;
     		set = Deck.DeckType.EWaste2;
     		break;
     	case 'R':
@@ -349,7 +357,7 @@ public class GameBuilder extends View {
     			data += "S";
     		else
     			data.concat("W");
-    		data += ("@" + item.getX() + "x" + item.getY() + "&" + item.getSize() + ";");
+    		data += ("," + item.getX() + "," + item.getY() + "," + item.getSize() + ";");
     	}
     	return data;
     }

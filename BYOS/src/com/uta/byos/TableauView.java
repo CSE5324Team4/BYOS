@@ -20,6 +20,7 @@ public class TableauView extends View {
 
     private Bitmap mCacheBitmap;
     private boolean mUseCache = false;
+    private boolean new_game;
 
     private Rect mScreenSize = new Rect();
 
@@ -48,7 +49,7 @@ public class TableauView extends View {
     	mCanvasPaint.setColor(0xFF228B22); // Green background
     	mCanvasPaint.setAntiAlias(false);
     	mCanvasPaint.setFilterBitmap(false);
-
+    	new_game = true;
     }
     
     public TableauView(Context context, AttributeSet attrs){
@@ -58,7 +59,7 @@ public class TableauView extends View {
         mCanvasPaint.setColor(0xFF228B22); // Green background
         mCanvasPaint.setAntiAlias(false);
         mCanvasPaint.setFilterBitmap(false);
-    	
+        new_game = true;
     }
     
     public TableauView(Context context, AttributeSet attrs, int defStyle){
@@ -68,239 +69,254 @@ public class TableauView extends View {
         mCanvasPaint.setColor(0xFF228B22); // Green background
         mCanvasPaint.setAntiAlias(false);
         mCanvasPaint.setFilterBitmap(false);
-    	
+        new_game = true;
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-            super.onSizeChanged(w, h, oldw, oldh);
+    	super.onSizeChanged(w, h, oldw, oldh);
 
-            // Store current screen size
-            mScreenSize.set(0, 0, w, h);
+    	// Store current screen size
+    	mScreenSize.set(0, 0, w, h);
 
-            // Calculate card and decks sizes and positions
-            int cw = w / 11;
-            mCardSize.set(0, 0, cw, (int) (cw * 1.5));
-            Log.v("card size", mCardSize.toString());
+    	// Calculate card and decks sizes and positions
+    	int cw = w / 11;
+    	mCardSize.set(0, 0, cw, (int) (cw * 1.5));
+    	Log.v("card size", mCardSize.toString());
 
-            int freeSize = w - cw * 7;
-            mCardCap = freeSize / (6 + 4 * 2);
+    	int freeSize = w - cw * 7;
+    	mCardCap = freeSize / (6 + 4 * 2);
 
-            int cy = (int) (mScreenSize.height() * 0.35);
+    	int cy = (int) (mScreenSize.height() * 0.35);
 
-            // Create all cards
-            mCards.add(new Card(1, Card.CardLand.EClub, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.club1));
-            mCards.add(new Card(2, Card.CardLand.EClub, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.club2));
-            mCards.add(new Card(3, Card.CardLand.EClub, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.club3));
-            mCards.add(new Card(4, Card.CardLand.EClub, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.club4));
-            mCards.add(new Card(5, Card.CardLand.EClub, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.club5));
-            mCards.add(new Card(6, Card.CardLand.EClub, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.club6));
-            mCards.add(new Card(7, Card.CardLand.EClub, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.club7));
-            mCards.add(new Card(8, Card.CardLand.EClub, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.club8));
-            mCards.add(new Card(9, Card.CardLand.EClub, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.club9));
-            mCards.add(new Card(10, Card.CardLand.EClub, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.club10));
-            mCards.add(new Card(11, Card.CardLand.EClub, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.club11));
-            mCards.add(new Card(12, Card.CardLand.EClub, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.club12));
-            mCards.add(new Card(13, Card.CardLand.EClub, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.club13));
+    	// Create all cards
+    	if(new_game){
+    		mCards.add(new Card(1, Card.CardLand.EClub, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.club1));
+    		mCards.add(new Card(2, Card.CardLand.EClub, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.club2));
+    		mCards.add(new Card(3, Card.CardLand.EClub, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.club3));
+    		mCards.add(new Card(4, Card.CardLand.EClub, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.club4));
+    		mCards.add(new Card(5, Card.CardLand.EClub, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.club5));
+    		mCards.add(new Card(6, Card.CardLand.EClub, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.club6));
+    		mCards.add(new Card(7, Card.CardLand.EClub, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.club7));
+    		mCards.add(new Card(8, Card.CardLand.EClub, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.club8));
+    		mCards.add(new Card(9, Card.CardLand.EClub, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.club9));
+    		mCards.add(new Card(10, Card.CardLand.EClub, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.club10));
+    		mCards.add(new Card(11, Card.CardLand.EClub, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.club11));
+    		mCards.add(new Card(12, Card.CardLand.EClub, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.club12));
+    		mCards.add(new Card(13, Card.CardLand.EClub, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.club13));
 
-            mCards.add(new Card(1, Card.CardLand.EDiamond, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.diamond1));
-            mCards.add(new Card(2, Card.CardLand.EDiamond, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.diamond2));
-            mCards.add(new Card(3, Card.CardLand.EDiamond, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.diamond3));
-            mCards.add(new Card(4, Card.CardLand.EDiamond, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.diamond4));
-            mCards.add(new Card(5, Card.CardLand.EDiamond, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.diamond5));
-            mCards.add(new Card(6, Card.CardLand.EDiamond, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.diamond6));
-            mCards.add(new Card(7, Card.CardLand.EDiamond, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.diamond7));
-            mCards.add(new Card(8, Card.CardLand.EDiamond, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.diamond8));
-            mCards.add(new Card(9, Card.CardLand.EDiamond, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.diamond9));
-            mCards.add(new Card(10, Card.CardLand.EDiamond, 0, getResources(), 0,
-                            0, mCardSize.width(), mCardSize.height(), R.raw.diamond10));
-            mCards.add(new Card(11, Card.CardLand.EDiamond, 0, getResources(), 0,
-                            0, mCardSize.width(), mCardSize.height(), R.raw.diamond11));
-            mCards.add(new Card(12, Card.CardLand.EDiamond, 0, getResources(), 0,
-                            0, mCardSize.width(), mCardSize.height(), R.raw.diamond12));
-            mCards.add(new Card(13, Card.CardLand.EDiamond, 0, getResources(), 0,
-                            0, mCardSize.width(), mCardSize.height(), R.raw.diamond13));
+    		mCards.add(new Card(1, Card.CardLand.EDiamond, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.diamond1));
+    		mCards.add(new Card(2, Card.CardLand.EDiamond, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.diamond2));
+    		mCards.add(new Card(3, Card.CardLand.EDiamond, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.diamond3));
+    		mCards.add(new Card(4, Card.CardLand.EDiamond, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.diamond4));
+    		mCards.add(new Card(5, Card.CardLand.EDiamond, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.diamond5));
+    		mCards.add(new Card(6, Card.CardLand.EDiamond, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.diamond6));
+    		mCards.add(new Card(7, Card.CardLand.EDiamond, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.diamond7));
+    		mCards.add(new Card(8, Card.CardLand.EDiamond, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.diamond8));
+    		mCards.add(new Card(9, Card.CardLand.EDiamond, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.diamond9));
+    		mCards.add(new Card(10, Card.CardLand.EDiamond, 0, getResources(), 0,
+    				0, mCardSize.width(), mCardSize.height(), R.raw.diamond10));
+    		mCards.add(new Card(11, Card.CardLand.EDiamond, 0, getResources(), 0,
+    				0, mCardSize.width(), mCardSize.height(), R.raw.diamond11));
+    		mCards.add(new Card(12, Card.CardLand.EDiamond, 0, getResources(), 0,
+    				0, mCardSize.width(), mCardSize.height(), R.raw.diamond12));
+    		mCards.add(new Card(13, Card.CardLand.EDiamond, 0, getResources(), 0,
+    				0, mCardSize.width(), mCardSize.height(), R.raw.diamond13));
 
-            mCards.add(new Card(1, Card.CardLand.EHeart, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.heart1));
-            mCards.add(new Card(2, Card.CardLand.EHeart, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.heart2));
-            mCards.add(new Card(3, Card.CardLand.EHeart, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.heart3));
-            mCards.add(new Card(4, Card.CardLand.EHeart, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.heart4));
-            mCards.add(new Card(5, Card.CardLand.EHeart, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.heart5));
-            mCards.add(new Card(6, Card.CardLand.EHeart, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.heart6));
-            mCards.add(new Card(7, Card.CardLand.EHeart, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.heart7));
-            mCards.add(new Card(8, Card.CardLand.EHeart, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.heart8));
-            mCards.add(new Card(9, Card.CardLand.EHeart, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.heart9));
-            mCards.add(new Card(10, Card.CardLand.EHeart, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.heart10));
-            mCards.add(new Card(11, Card.CardLand.EHeart, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.heart11));
-            mCards.add(new Card(12, Card.CardLand.EHeart, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.heart12));
-            mCards.add(new Card(13, Card.CardLand.EHeart, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.heart13));
+    		mCards.add(new Card(1, Card.CardLand.EHeart, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.heart1));
+    		mCards.add(new Card(2, Card.CardLand.EHeart, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.heart2));
+    		mCards.add(new Card(3, Card.CardLand.EHeart, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.heart3));
+    		mCards.add(new Card(4, Card.CardLand.EHeart, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.heart4));
+    		mCards.add(new Card(5, Card.CardLand.EHeart, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.heart5));
+    		mCards.add(new Card(6, Card.CardLand.EHeart, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.heart6));
+    		mCards.add(new Card(7, Card.CardLand.EHeart, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.heart7));
+    		mCards.add(new Card(8, Card.CardLand.EHeart, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.heart8));
+    		mCards.add(new Card(9, Card.CardLand.EHeart, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.heart9));
+    		mCards.add(new Card(10, Card.CardLand.EHeart, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.heart10));
+    		mCards.add(new Card(11, Card.CardLand.EHeart, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.heart11));
+    		mCards.add(new Card(12, Card.CardLand.EHeart, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.heart12));
+    		mCards.add(new Card(13, Card.CardLand.EHeart, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.heart13));
 
-            mCards.add(new Card(1, Card.CardLand.ESpade, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.spade1));
-            mCards.add(new Card(2, Card.CardLand.ESpade, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.spade2));
-            mCards.add(new Card(3, Card.CardLand.ESpade, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.spade3));
-            mCards.add(new Card(4, Card.CardLand.ESpade, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.spade4));
-            mCards.add(new Card(5, Card.CardLand.ESpade, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.spade5));
-            mCards.add(new Card(6, Card.CardLand.ESpade, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.spade6));
-            mCards.add(new Card(7, Card.CardLand.ESpade, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.spade7));
-            mCards.add(new Card(8, Card.CardLand.ESpade, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.spade8));
-            mCards.add(new Card(9, Card.CardLand.ESpade, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.spade9));
-            mCards.add(new Card(10, Card.CardLand.ESpade, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.spade10));
-            mCards.add(new Card(11, Card.CardLand.ESpade, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.spade11));
-            mCards.add(new Card(12, Card.CardLand.ESpade, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.spade12));
-            mCards.add(new Card(13, Card.CardLand.ESpade, 0, getResources(), 0, 0,
-                            mCardSize.width(), mCardSize.height(), R.raw.spade13));
+    		mCards.add(new Card(1, Card.CardLand.ESpade, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.spade1));
+    		mCards.add(new Card(2, Card.CardLand.ESpade, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.spade2));
+    		mCards.add(new Card(3, Card.CardLand.ESpade, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.spade3));
+    		mCards.add(new Card(4, Card.CardLand.ESpade, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.spade4));
+    		mCards.add(new Card(5, Card.CardLand.ESpade, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.spade5));
+    		mCards.add(new Card(6, Card.CardLand.ESpade, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.spade6));
+    		mCards.add(new Card(7, Card.CardLand.ESpade, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.spade7));
+    		mCards.add(new Card(8, Card.CardLand.ESpade, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.spade8));
+    		mCards.add(new Card(9, Card.CardLand.ESpade, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.spade9));
+    		mCards.add(new Card(10, Card.CardLand.ESpade, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.spade10));
+    		mCards.add(new Card(11, Card.CardLand.ESpade, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.spade11));
+    		mCards.add(new Card(12, Card.CardLand.ESpade, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.spade12));
+    		mCards.add(new Card(13, Card.CardLand.ESpade, 0, getResources(), 0, 0,
+    				mCardSize.width(), mCardSize.height(), R.raw.spade13));
 
-            // Create source decks (random)
-            // Add cards to the source decks
-            Random random = new Random();
-            if (mSourceDecks.size() == 0) {
-            		//<<Team 4 comment>-Initialize stacks in the Tableau
-                    Deck deck = new Deck(Deck.DeckType.ESource, mCardCap * 4, cy,
-                                    mCardSize.width(), mCardSize.height());
-                    Card c = mCards.remove(random.nextInt(mCards.size()));
-                    c.mTurned = true;
-                    deck.addCard(c, false);
-                    mSourceDecks.add(deck);
+    		// Create source decks (random)
+    		// Add cards to the source decks
+    		Random random = new Random();
+    		//<<Team 4 comment>-Initialize stacks in the Tableau
+    		Deck deck = new Deck(Deck.DeckType.ESource, mCardCap * 4, cy,
+    				mCardSize.width(), mCardSize.height());
+    		Card c = mCards.remove(random.nextInt(mCards.size()));
+    		c.mTurned = true;
+    		deck.addCard(c, false);
+    		mSourceDecks.add(deck);
 
-                    deck = new Deck(Deck.DeckType.ESource, mCardCap * 5
-                                    + mCardSize.width(), cy, mCardSize.width(),
-                                    mCardSize.height());
-                    for (int i = 0; i < 2; i++) {
-                            c = mCards.remove(random.nextInt(mCards.size()));
-                            deck.addCard(c, false);
-                    }
-                    c.mTurned = true;
-                    mSourceDecks.add(deck);
+    		deck = new Deck(Deck.DeckType.ESource, mCardCap * 5
+    				+ mCardSize.width(), cy, mCardSize.width(),
+    				mCardSize.height());
+    		for (int i = 0; i < 2; i++) {
+    			c = mCards.remove(random.nextInt(mCards.size()));
+    			deck.addCard(c, false);
+    		}
+    		c.mTurned = true;
+    		mSourceDecks.add(deck);
 
-                    deck = new Deck(Deck.DeckType.ESource, mCardCap * 6
-                                    + mCardSize.width() * 2, cy, mCardSize.width(),
-                                    mCardSize.height());
-                    for (int i = 0; i < 3; i++) {
-                            c = mCards.remove(random.nextInt(mCards.size()));
-                            deck.addCard(c, false);
-                    }
-                    c.mTurned = true;
-                    mSourceDecks.add(deck);
+    		deck = new Deck(Deck.DeckType.ESource, mCardCap * 6
+    				+ mCardSize.width() * 2, cy, mCardSize.width(),
+    				mCardSize.height());
+    		for (int i = 0; i < 3; i++) {
+    			c = mCards.remove(random.nextInt(mCards.size()));
+    			deck.addCard(c, false);
+    		}
+    		c.mTurned = true;
+    		mSourceDecks.add(deck);
 
-                    deck = new Deck(Deck.DeckType.ESource, mCardCap * 7
-                                    + mCardSize.width() * 3, cy, mCardSize.width(),
-                                    mCardSize.height());
-                    for (int i = 0; i < 4; i++) {
-                            c = mCards.remove(random.nextInt(mCards.size()));
-                            deck.addCard(c, false);
-                    }
-                    c.mTurned = true;
-                    mSourceDecks.add(deck);
+    		deck = new Deck(Deck.DeckType.ESource, mCardCap * 7
+    				+ mCardSize.width() * 3, cy, mCardSize.width(),
+    				mCardSize.height());
+    		for (int i = 0; i < 4; i++) {
+    			c = mCards.remove(random.nextInt(mCards.size()));
+    			deck.addCard(c, false);
+    		}
+    		c.mTurned = true;
+    		mSourceDecks.add(deck);
 
-                    deck = new Deck(Deck.DeckType.ESource, mCardCap * 8
-                                    + mCardSize.width() * 4, cy, mCardSize.width(),
-                                    mCardSize.height());
-                    for (int i = 0; i < 5; i++) {
-                            c = mCards.remove(random.nextInt(mCards.size()));
-                            deck.addCard(c, false);
-                    }
-                    c.mTurned = true;
-                    mSourceDecks.add(deck);
+    		deck = new Deck(Deck.DeckType.ESource, mCardCap * 8
+    				+ mCardSize.width() * 4, cy, mCardSize.width(),
+    				mCardSize.height());
+    		for (int i = 0; i < 5; i++) {
+    			c = mCards.remove(random.nextInt(mCards.size()));
+    			deck.addCard(c, false);
+    		}
+    		c.mTurned = true;
+    		mSourceDecks.add(deck);
 
-                    deck = new Deck(Deck.DeckType.ESource, mCardCap * 9
-                                    + mCardSize.width() * 5, cy, mCardSize.width(),
-                                    mCardSize.height());
-                    for (int i = 0; i < 6; i++) {
-                            c = mCards.remove(random.nextInt(mCards.size()));
-                            deck.addCard(c, false);
-                    }
-                    c.mTurned = true;
-                    mSourceDecks.add(deck);
+    		deck = new Deck(Deck.DeckType.ESource, mCardCap * 9
+    				+ mCardSize.width() * 5, cy, mCardSize.width(),
+    				mCardSize.height());
+    		for (int i = 0; i < 6; i++) {
+    			c = mCards.remove(random.nextInt(mCards.size()));
+    			deck.addCard(c, false);
+    		}
+    		c.mTurned = true;
+    		mSourceDecks.add(deck);
 
-                    deck = new Deck(Deck.DeckType.ESource, mCardCap * 10
-                                    + mCardSize.width() * 6, cy, mCardSize.width(),
-                                    mCardSize.height());
-                    for (int i = 0; i < 7; i++) {
-                            c = mCards.remove(random.nextInt(mCards.size()));
-                            deck.addCard(c, false);
-                    }
-                    c.mTurned = true;
-                    mSourceDecks.add(deck);
+    		deck = new Deck(Deck.DeckType.ESource, mCardCap * 10
+    				+ mCardSize.width() * 6, cy, mCardSize.width(),
+    				mCardSize.height());
+    		for (int i = 0; i < 7; i++) {
+    			c = mCards.remove(random.nextInt(mCards.size()));
+    			deck.addCard(c, false);
+    		}
+    		c.mTurned = true;
+    		mSourceDecks.add(deck);
 
-                    // Create target decks
-                    deck = new Deck(Deck.DeckType.ETarget, mCardCap * 7
-                                    + mCardSize.width() * 3, mCardCap, mCardSize.width(),
-                                    mCardSize.height());
-                    mTargetDecks.add(deck);
+    		// Create target decks
+    		deck = new Deck(Deck.DeckType.ETarget, mCardCap * 7
+    				+ mCardSize.width() * 3, mCardCap, mCardSize.width(),
+    				mCardSize.height());
+    		mTargetDecks.add(deck);
 
-                    deck = new Deck(Deck.DeckType.ETarget, mCardCap * 8
-                                    + mCardSize.width() * 4, mCardCap, mCardSize.width(),
-                                    mCardSize.height());
-                    mTargetDecks.add(deck);
+    		deck = new Deck(Deck.DeckType.ETarget, mCardCap * 8
+    				+ mCardSize.width() * 4, mCardCap, mCardSize.width(),
+    				mCardSize.height());
+    		mTargetDecks.add(deck);
 
-                    deck = new Deck(Deck.DeckType.ETarget, mCardCap * 9
-                                    + mCardSize.width() * 5, mCardCap, mCardSize.width(),
-                                    mCardSize.height());
-                    mTargetDecks.add(deck);
+    		deck = new Deck(Deck.DeckType.ETarget, mCardCap * 9
+    				+ mCardSize.width() * 5, mCardCap, mCardSize.width(),
+    				mCardSize.height());
+    		mTargetDecks.add(deck);
 
-                    deck = new Deck(Deck.DeckType.ETarget, mCardCap * 10
-                                    + mCardSize.width() * 6, mCardCap, mCardSize.width(),
-                                    mCardSize.height());
-                    mTargetDecks.add(deck);
+    		deck = new Deck(Deck.DeckType.ETarget, mCardCap * 10
+    				+ mCardSize.width() * 6, mCardCap, mCardSize.width(),
+    				mCardSize.height());
+    		mTargetDecks.add(deck);
 
-                    // Waste decks
-                    mWasteDeck = new Deck(Deck.DeckType.EWaste1, mCardCap * 4,
-                                    mCardCap, mCardSize.width(), mCardSize.height());
-                    while (!mCards.isEmpty()) {
-                            c = mCards.remove(random.nextInt(mCards.size()));
-                            mWasteDeck.addCard(c, true);
-                    }
-                    mWasteDeck2 = new Deck(Deck.DeckType.EWaste2, mCardCap * 5
-                                    + mCardSize.width(), mCardCap, mCardSize.width(),
-                                    mCardSize.height());
-            }
+    		// Waste decks
+    		mWasteDeck = new Deck(Deck.DeckType.EWaste1, mCardCap * 4,
+    				mCardCap, mCardSize.width(), mCardSize.height());
+    		while (!mCards.isEmpty()) {
+    			c = mCards.remove(random.nextInt(mCards.size()));
+    			mWasteDeck.addCard(c, true);
+    		}
+    		mWasteDeck2 = new Deck(Deck.DeckType.EWaste2, mCardCap * 5
+    				+ mCardSize.width(), mCardCap, mCardSize.width(),
+    				mCardSize.height());
+    		new_game = false;
+    	}else{
+    		mWasteDeck.adjust(w, h, oldw, oldh);
+    		mWasteDeck2.adjust(w, h, oldw, oldh);
+    		Deck tar;
+    		for(int i = 0; i < mSourceDecks.size(); i++){
+    			tar = mSourceDecks.get(i);
+    			tar.adjust(w, h, oldw, oldh);
+    			mSourceDecks.set(i, tar);
+    		}
+    		for(int i = 0; i < mTargetDecks.size(); i++){
+    			tar = mTargetDecks.get(i);
+    			tar.adjust(w, h, oldw, oldh);
+    			mTargetDecks.set(i, tar);
+    		}
+    	}
 
     }
 
@@ -504,7 +520,7 @@ public class TableauView extends View {
     }
     
     private boolean checkTableauMove(Card movedCard, Card toCard){
-    	if(toCard.mCardValue == movedCard.mCardValue + ruleBook.charAt(1))
+    	if(toCard.mCardValue == movedCard.mCardValue + 1)
     		switch(ruleBook.charAt(0)){
     		case 's': //If cards are to be built up in suit
     			return movedCard.mCardLand == toCard.mCardLand;
