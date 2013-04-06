@@ -19,6 +19,8 @@ public class Deck {
 	protected Rect mRect;
 	protected Paint paint = new Paint();
 	protected ArrayList<Card> mCards = new ArrayList<Card>();
+	
+	private String buildRule;
 
 	/*
 	 * <Team 4> Comment
@@ -87,6 +89,7 @@ public class Deck {
 		//Log.v("from", Integer.toString(fromDeck.mCards.size()));
 		//Log.v("to", Integer.toString(mCards.size()));
 	}
+
 
 	public void addCard(Card newCard, boolean justOnTopOfOthers) {
 		newCard.setDeck(this);

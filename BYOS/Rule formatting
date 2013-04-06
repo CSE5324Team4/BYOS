@@ -2,7 +2,7 @@ Building rules
 
 				ind/	mutex/	qual/	Comments
 -suit			s		1
--sequence		(seq)			a/d		Ascending/Descending
+-sequence		(seq)			(d)		Descending
 -color			c		1
 -alternating	a		1
 color

@@ -142,6 +142,8 @@ public class Card {
     public int getY(){
     	return mY;
     }
+    
+   
 
 
 }

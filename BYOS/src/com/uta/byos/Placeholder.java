@@ -19,7 +19,7 @@ public class Placeholder {
 	private int mX;
 	private int mY;
 	private int size;  //Number of cards in the pile
-	private Rect mRect;
+	public Rect mRect;
 	protected int height;
 	protected int width;
 	protected Deck.DeckType type;

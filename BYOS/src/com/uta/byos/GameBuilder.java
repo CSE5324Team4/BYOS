@@ -40,6 +40,7 @@ public class GameBuilder extends View {
     private Paint textP = new Paint();
     private String sType;
     private Paint typeP = new Paint();
+    private int deckSize = 1;
 
     protected ArrayList<Placeholder> places = new ArrayList<Placeholder>();
     protected Placeholder mActiveStack;
@@ -127,7 +128,7 @@ public class GameBuilder extends View {
     			size = item.getSize();
     			places.set(index, new Placeholder(x, y, size, mCardSize.height(), mCardSize.width(), Deck.DeckType.EWaste1, getResources()));}
     	}else{
-    		places.add(new Placeholder((w-mCardSize.width())/2, (h-mCardSize.height())/2, 52, mCardSize.height(), mCardSize.width(), Deck.DeckType.EWaste1, getResources()));
+    		places.add(new Placeholder((w-mCardSize.width())/2, (h-mCardSize.height())/2, deckSize*52, mCardSize.height(), mCardSize.width(), Deck.DeckType.EWaste1, getResources()));
     		buildInProgress = true;
     	}
     }
@@ -168,11 +169,9 @@ public class GameBuilder extends View {
      */
     private void enableCache(boolean enabled) {
     	if (enabled && !mUseCache) { //<Team 4 comment> Panaanen had this written as enabled && mUseCache != enabled
-    		mActiveStack.setVisible(false);
     		setDrawingCacheEnabled(true);
     		//buildDrawingCache();
     		mCacheBitmap = Bitmap.createBitmap(getDrawingCache());
-    		mActiveStack.setVisible(true);
     	} else if (!enabled && mUseCache) {
     		setDrawingCacheEnabled(false);
     		mCacheBitmap = null;
@@ -193,13 +192,15 @@ public class GameBuilder extends View {
     	if (action == MotionEvent.ACTION_DOWN) {
     		initX = (int) event.getX();
     		initY = (int) event.getY();
-    		mActiveStack = getDeckUnderTouch(initX, initY);             
+    		mActiveStack = getDeckUnderTouch(initX, initY);
+    		enableCache(true);
+    		invalidate();
     		return true;
     	} else if (action == MotionEvent.ACTION_MOVE) {
     		int x = getXCell((int) event.getX());
     		int y = getYCell((int) event.getY());
-    		if (mActiveStack != null) 
-    			mActiveStack.setPos(getXCell(x)-mCardSize.width()/2, getYCell(y)-mCardSize.height()/2);	
+    		if (mActiveStack != null){ 
+    			mActiveStack.setPos(getXCell(x)-mCardSize.width()/2, getYCell(y)-mCardSize.height()/2);}
     		return true;
 
     	} else if (action == MotionEvent.ACTION_UP) {
@@ -208,7 +209,7 @@ public class GameBuilder extends View {
     		enableCache(false);
     		if(mActiveStack == null){
     			if(Math.abs(x - mScreenSize.width()*3/4) < 32  && Math.abs(y - mScreenSize.height()*7/8) < 32){
-    				if(alloc < 52  && y < mScreenSize.height()*7/8)
+    				if(alloc < deckSize*52  && y < mScreenSize.height()*7/8)
     					alloc++;
     				else if(alloc > 1 && y > mScreenSize.height()*7/8)
     					alloc--;
@@ -225,12 +226,16 @@ public class GameBuilder extends View {
     					break;
     				}
     			}else
-    				addStack(alloc, sType, getXCell(x), getYCell(y));
-    		}else
+    				try{
+    					addStack(alloc, sType, getXCell(x), getYCell(y));
+    				}catch (ArithmeticException caught){}				
+    		}else if(Math.abs(x - initX) < 32  && Math.abs(y - initY) < 32)
     			removeUnderTouch(x, y);
     		//handleCardMove(x, y);
+    		enableCache(false);
     		invalidate();
     		mActiveStack = null;
+    		invalidate();
     		return true;
     	}
     	return false;
@@ -346,7 +351,7 @@ public class GameBuilder extends View {
     
     @Override
     public String toString(){
-    	String data = "";
+    	String data = String.valueOf(deckSize) + ":";
     	for(Placeholder item : places){
     		Deck.DeckType type = item.type;
     		if(type == Deck.DeckType.ESource)
@@ -356,7 +361,7 @@ public class GameBuilder extends View {
     		else if(type == Deck.DeckType.EWaste1)
     			data += "S";
     		else
-    			data.concat("W");
+    			data += "W";
     		data += ("," + item.getX() + "," + item.getY() + "," + item.getSize() + ";");
     	}
     	return data;
