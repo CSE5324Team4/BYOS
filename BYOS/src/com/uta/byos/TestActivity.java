@@ -32,8 +32,7 @@ public class TestActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item){
 		switch (item.getItemId()){
 		case 0:
-			Intent i = new Intent(this, GameActivity.class);
-			startActivity(i);
+			finish();
 			return true;
 		case R.id.menu_settings:
 			return true;

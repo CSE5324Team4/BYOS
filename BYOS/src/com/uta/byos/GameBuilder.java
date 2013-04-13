@@ -29,6 +29,7 @@ public class GameBuilder extends View {
     private Rect mScreenSize = new Rect();
     private Rect cCell = new Rect();
     private boolean mUseCache = false;
+    private boolean itos = false;
 
     private Rect mCardSize = new Rect();
     private int cardXCap;
@@ -39,11 +40,12 @@ public class GameBuilder extends View {
     private int mCardCap;
     private Paint textP = new Paint();
     private String sType;
+    private String rP = "D";
     private Paint typeP = new Paint();
-    private int deckSize = 1;
+    private int deckSize = 2;
 
     protected ArrayList<Placeholder> places = new ArrayList<Placeholder>();
-    protected Placeholder mActiveStack;
+    private Placeholder mActiveStack;
 	protected Placeholder menuDummyS;
 	protected Placeholder menuDummyT;
 
@@ -117,20 +119,8 @@ public class GameBuilder extends View {
 		int cy = (int) (mScreenSize.height() * 0.35);
 		String allocStr = String.valueOf(alloc);
 		sType = "R";
-
-    	if(buildInProgress){
-    		int index, x, y, size;
-    		Placeholder item;
-    		for(index = 0; index < places.size(); index++){
-    			item = places.get(index);
-    			x = item.getX()*h/oldh;
-    			y = item.getY()*w/oldw;
-    			size = item.getSize();
-    			places.set(index, new Placeholder(x, y, size, mCardSize.height(), mCardSize.width(), Deck.DeckType.EWaste1, getResources()));}
-    	}else{
-    		places.add(new Placeholder((w-mCardSize.width())/2, (h-mCardSize.height())/2, deckSize*52, mCardSize.height(), mCardSize.width(), Deck.DeckType.EWaste1, getResources()));
-    		buildInProgress = true;
-    	}
+		places.add(new Placeholder((w-mCardSize.width())/2, (h-mCardSize.height())/2, deckSize*52, mCardSize.height(), mCardSize.width(), Deck.DeckType.EWaste1, getResources()));
+		buildInProgress = true;
     }
     
     /*
@@ -152,10 +142,14 @@ public class GameBuilder extends View {
                     mCanvasPaint.setStyle(Style.FILL);
                     canvas.drawRect(mScreenSize, mCanvasPaint);
                     canvas.drawText(String.valueOf(alloc), mScreenSize.width()*3/4, mScreenSize.height()*7/8, textP);
-                    canvas.drawText(sType, mScreenSize.width()/4, mScreenSize.height()*7/8, typeP);
+                    canvas.drawText(sType, mScreenSize.width()/4, mScreenSize.height()*7/8, textP);
+                    canvas.drawText(rP, mScreenSize.width()/2, mScreenSize.height()*7/8, textP);
                     // Draw decks
-                    for(Placeholder card : places)
-                    	card.doDraw(canvas);
+                    for(Placeholder card : places){
+                    	if(card instanceof CustomReserve)
+                    		((CustomReserve) card).doDraw(canvas);
+                    	else
+                    		card.doDraw(canvas);}
             }
             if (mActiveStack != null) {
                 mActiveStack.doDraw(canvas);}
@@ -197,10 +191,13 @@ public class GameBuilder extends View {
     		invalidate();
     		return true;
     	} else if (action == MotionEvent.ACTION_MOVE) {
-    		int x = getXCell((int) event.getX());
-    		int y = getYCell((int) event.getY());
-    		if (mActiveStack != null){ 
-    			mActiveStack.setPos(getXCell(x)-mCardSize.width()/2, getYCell(y)-mCardSize.height()/2);}
+    		int x = (int) event.getX();
+    		int y = (int) event.getY();
+    		if (mActiveStack != null && Math.abs(y - mScreenSize.height()*7/8) > mCardSize.height()){
+    			if(mActiveStack instanceof CustomReserve)
+    				((CustomReserve) mActiveStack).setPos(getXCell(x)-mCardSize.width()/2, getYCell(y)-mCardSize.height()/2);
+    			else
+    				mActiveStack.setPos(getXCell(x)-mCardSize.width()/2, getYCell(y)-mCardSize.height()/2);}
     		return true;
 
     	} else if (action == MotionEvent.ACTION_UP) {
@@ -211,7 +208,7 @@ public class GameBuilder extends View {
     			if(Math.abs(x - mScreenSize.width()*3/4) < 32  && Math.abs(y - mScreenSize.height()*7/8) < 32){
     				if(alloc < deckSize*52  && y < mScreenSize.height()*7/8)
     					alloc++;
-    				else if(alloc > 1 && y > mScreenSize.height()*7/8)
+    				else if(alloc > 0 && y > mScreenSize.height()*7/8)
     					alloc--;
     			}else if(Math.abs(y - mScreenSize.height()*7/8) < 32 && Math.abs(x - mScreenSize.width()/4) < 32){
     				switch(sType.charAt(0)){
@@ -225,19 +222,31 @@ public class GameBuilder extends View {
     					sType = "R";
     					break;
     				}
-    			}else
+    			}else if(Math.abs(x - mScreenSize.width()/2) < 32  && Math.abs(y - mScreenSize.height()*7/8) < 32){
+    				switch(rP.charAt(0)){
+    				case 'D':
+    					rP = "U"; break;
+    				case 'U':
+    					rP = "D"; break;
+    				}
+    			}else if(Math.abs(y - mScreenSize.height()*7/8) > mCardSize.height())
     				try{
     					addStack(alloc, sType, getXCell(x), getYCell(y));
     				}catch (ArithmeticException caught){}				
-    		}else if(Math.abs(x - initX) < 32  && Math.abs(y - initY) < 32)
-    			removeUnderTouch(x, y);
+    		}else if(Math.abs(x - initX) < 32  && Math.abs(y - initY) < 32 && places.indexOf(mActiveStack) != 0){
+    			if(itos)
+    				addCardsOrRemove(initX, initY);
+    			else{
+    				Placeholder index = places.get(0);
+        			index.setSize(index.getSize() + mActiveStack.getSize());
+        			places.remove(mActiveStack);}}
     		//handleCardMove(x, y);
     		enableCache(false);
-    		invalidate();
     		mActiveStack = null;
     		invalidate();
     		return true;
     	}
+    	mActiveStack = null;
     	return false;
 
     }
@@ -275,10 +284,15 @@ public class GameBuilder extends View {
      */
     
     
-    public void addStack(int s, String type, int x, int y) throws ArithmeticException{
+    
+
+	public void addStack(int s, String type, int x, int y) throws ArithmeticException{
     	Placeholder main;
     	main = places.get(0);
     	Deck.DeckType set;
+    	if(s > main.getSize())
+    		throw new ArithmeticException("Not enough cards!");
+    	main.setSize(main.getSize() - s);
     	switch(type.charAt(0)){
     	case 'S':
     		set = Deck.DeckType.EWaste1;
@@ -288,8 +302,9 @@ public class GameBuilder extends View {
     		set = Deck.DeckType.EWaste2;
     		break;
     	case 'R':
-    		set = Deck.DeckType.ESource;
-    		break;
+    		places.add(new CustomReserve(x-mCardSize.width()/2, y-mCardSize.height()/2, s, mCardSize.height(), mCardSize.width(),
+    				getResources(), rP.equals("U")));
+    		return;
     	case 'F':
     		s = 0;
     		set = Deck.DeckType.ETarget;
@@ -297,11 +312,40 @@ public class GameBuilder extends View {
     	default:
     		throw new ArithmeticException("Not a valid deck type");
     	}
-    	if(s > main.getSize())
-    		throw new ArithmeticException("Not enough cards!");
-    	main.setSize(main.getSize() - s);
-    	places.add(new Placeholder(x-mCardSize.width()/2, y-mCardSize.height()/2, s, mCardSize.height(), mCardSize.width(), set, getResources()));
+    	places.add(new Placeholder(x-mCardSize.width()/2, y-mCardSize.height()/2, s, mCardSize.height(), mCardSize.width(), set,
+    			getResources()));
     }
+	
+	private void addCardsOrRemove(int x, int y) {
+    	Rect bounds;
+    	int dec = 0;
+    	boolean iUT = mActiveStack.isUnderTouch(x, y);
+    	Placeholder index = places.get(0);
+    	if(itos && iUT){
+    		bounds = mActiveStack.mRect;
+    		if(y >= bounds.top + bounds.height()/2)
+    			dec = 1;
+    		else
+    			dec = 2;
+    	}else if(itos)
+    		dec = 1;
+    	else if(iUT)
+    		dec = 2;
+    	switch(dec){
+    	case 1:
+    		if(alloc < index.getSize()){
+    			index.setSize(index.getSize() - alloc);
+    			switch(rP.charAt(0)){
+    			case 'U':
+    				((CustomReserve) mActiveStack).addCards(alloc, true); break;
+    			case 'D':
+    				((CustomReserve) mActiveStack).addCards(alloc, false); break;
+    			} break;}
+    	case 2:
+    		index.setSize(index.getSize() + mActiveStack.getSize());
+    		places.remove(mActiveStack);
+    	}
+	}
     
     /*
      * Finds the placeholder selected the user is "touching"
@@ -311,11 +355,20 @@ public class GameBuilder extends View {
      */
 
 
-    private Placeholder getDeckUnderTouch(int x, int y) {
-    	for(Placeholder stack : places)
-    		if(stack.isUnderTouch(x, y))
-    			return stack;
-    	return null;
+	private Placeholder getDeckUnderTouch(int x, int y) {
+		for(Placeholder stack : places){
+			if(stack instanceof CustomReserve){
+				if(((CustomReserve) stack).isTopOfStack(x, y)){
+					itos = true;
+					return stack;
+				}else if(stack.isUnderTouch(x, y)){
+					itos = false;
+					return stack;}
+			}else if(stack.isUnderTouch(x, y)){
+				itos = false;
+				return stack;}
+		}
+		return null;
     }
     
     /*
@@ -362,7 +415,12 @@ public class GameBuilder extends View {
     			data += "S";
     		else
     			data += "W";
-    		data += ("," + item.getX() + "," + item.getY() + "," + item.getSize() + ";");
+    		data += ("," + item.getX() + "," + item.getY() + ",");
+    		if(type != Deck.DeckType.ESource)
+    			data += (item.getSize());
+    		else
+    			data += ((CustomReserve) item);
+    		data += ";";
     	}
     	return data;
     }

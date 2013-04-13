@@ -123,4 +123,12 @@ public class Placeholder {
 			return false;
 	}
 
+	public Bitmap getmBitmap() {
+		return mBitmap;
+	}
+
+	public void setmBitmap(Bitmap mBitmap) {
+		this.mBitmap = mBitmap;
+	}
+
 }

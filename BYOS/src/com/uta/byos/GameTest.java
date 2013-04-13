@@ -29,7 +29,7 @@ public class GameTest extends View {
 	private String tableBuild;
 	private int cardXCap;
 	private int cardYCap;
-	private String ruleBook = "41ffdd";
+	private String ruleBook = "b1ffdd";
 
 	public GameTest(Context context) {
 		super(context);
@@ -195,11 +195,7 @@ public class GameTest extends View {
 					mCardSize.width(), mCardSize.height(), R.raw.spade13));}
 		Random deal = new Random();
 		String[] tok = tableBuild.split(":")[1].split(";");
-		Deck.DeckType set;
-		Deck tar;
-		Card c;
-		int limit;
-		boolean waste;
+		Deck.DeckType set; Deck tar; Card c; int limit; boolean waste;
 		for(String i : tok){
 			String[] p = i.split(",");
 			switch(p[0].charAt(0)){
@@ -223,15 +219,21 @@ public class GameTest extends View {
 				throw new ArithmeticException("Not a valid deck type");
 			}
 			tar = new Deck(set, Integer.parseInt(p[1]), Integer.parseInt(p[2]),mCardSize.width(),mCardSize.height());
-			limit = Integer.parseInt(p[3]) - ((set == Deck.DeckType.ESource) ? 1 : 0);
-			for(int j = 0; j < limit; j++){
-				c = mCards.remove(deal.nextInt(mCards.size()));
-				tar.addCard(c, waste);}
-			if(set == Deck.DeckType.ESource){
-				c = mCards.remove(deal.nextInt(mCards.size()));
-				c.mTurned = true;
-				tar.addCard(c, waste);
-			}
+			if(set == Deck.DeckType.ESource)
+				for(int l=0; l < p[3].length(); l++){
+					c = mCards.remove(deal.nextInt(mCards.size()));
+					if(p[3].charAt(l) == 'U'){
+						c.mTurned = true;
+					}else{
+						c.mTurned = false;
+					}
+					tar.addCard(c, false);
+				}
+			else{			
+				limit = Integer.parseInt(p[3]) - ((set == Deck.DeckType.ESource) ? 1 : 0);
+				for(int j = 0; j < limit; j++){
+					c = mCards.remove(deal.nextInt(mCards.size()));
+					tar.addCard(c, waste);}}
 			mDecks.add(tar);
 		}
 	}
@@ -310,6 +312,7 @@ public class GameTest extends View {
 			}
 
 			// Log.v("", "down");
+			invalidate();
 			return true;
 
 		} else if (action == MotionEvent.ACTION_MOVE) {
@@ -356,35 +359,44 @@ public class GameTest extends View {
 			}
 			switch(ruleBook.charAt(3)){
 			case 't':
-				mov = (cV == val%13); //Wrappable
+				mov = (cV == val%13); break; //Wrappable
 			case 'f':
-				mov = (cV == val); //Not wrappable
+				mov = (cV == val); break; //Not wrappable
 			default:
 				mov = false;	
 			}
-			switch (ruleBook.charAt(0)){
-			case '1':  //Only stacks with the same suit are movable
-			case '3':
-			case 'b':
-				if(card.mCardLand == card.mParentCard.mCardLand)
-					return cardIsMoveable(card.mParentCard);
-			case '2': //Only stacks with the same color are movable
-			case '6':
-			case 'a':
-				if(card.mBlack == card.mParentCard.mBlack)
-					return cardIsMoveable(card.mParentCard);
-			case '4': //Only stacks with alternating colors are movable
-			case '7':
-			case '0':
-				if(card.mBlack != card.mParentCard.mBlack)
-					return cardIsMoveable(card.mParentCard);
-			case '5':
-			case '9':
-				if(card.mCardLand != card.mParentCard.mCardLand)
-					return cardIsMoveable(card.mParentCard);
-			case '8':
-				return true;
-			}}
+			if(mov)
+				switch (ruleBook.charAt(0)){
+				case '1':  //Only stacks with the same suit are movable
+				case '3':
+				case 'b':
+					if(card.mCardLand == card.mParentCard.mCardLand)
+						return cardIsMoveable(card.mParentCard);
+					else
+						return false;
+				case '2': //Only stacks with the same color are movable
+				case '6':
+				case 'a':
+					if(card.mBlack == card.mParentCard.mBlack)
+						return cardIsMoveable(card.mParentCard);
+					else
+						return false;
+				case '4': //Only stacks with alternating colors are movable
+				case '7':
+				case '0':
+					if(card.mBlack != card.mParentCard.mBlack)
+						return cardIsMoveable(card.mParentCard);
+					else
+						return false;
+				case '5':
+				case '9':
+					if(card.mCardLand != card.mParentCard.mCardLand)
+						return cardIsMoveable(card.mParentCard);
+					else
+						return false;
+				case '8':
+					return true;
+				}}
 		return false;
 	}
 
@@ -399,6 +411,7 @@ public class GameTest extends View {
 		Deck fromDeck = null;
 		Deck toDeck = getDeckUnderTouch(x, y);
 		boolean topOfOtherCards = true;
+		boolean flag = false;
 
 		if (mActiveCard != null) {
 			fromDeck = mActiveCard.mOwnerDeck;
@@ -406,7 +419,10 @@ public class GameTest extends View {
 				for(Deck to : mDecks)
 					if(to.mDeckType == Deck.DeckType.EWaste2){
 						to.addCard(fromDeck, mActiveCard, topOfOtherCards);
-						break;}	
+						flag = true;
+						break;}
+				if(!flag)
+					dealToTableau(fromDeck);	
 			} else {
 				// Handle all other card move
 				if (toDeck!=null) {
@@ -432,15 +448,27 @@ public class GameTest extends View {
 					if(to.mDeckType == Deck.DeckType.EWaste2){
 						waste = to;
 						break;}
-				for (int i=0;i<waste.mCards.size();i++) {
+				for (int i=0;i<waste.mCards.size();) {
 					Card card = waste.mCards.get(i);
 					card.mTurned = false;
 					toDeck.addCard(waste, card, true);
-					i--;
 				}
 			}
 		}
 		mActiveCard = null;
+	}
+	
+	private void dealToTableau(Deck stock){
+		Card draw;
+		for(Deck to : mDecks)
+			if(to.mDeckType == Deck.DeckType.ESource){
+				try{
+					draw = stock.mCards.get(stock.mCards.size()-1);
+				}catch(IndexOutOfBoundsException ioobe){
+					return;
+				}
+				draw.mTurned = true;
+				to.addCard(stock, draw, false);}		
 	}
 
 	private boolean acceptCardMove(Deck from, Deck to, Card card) {
