@@ -11,7 +11,9 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Paint.Style;
@@ -26,8 +28,15 @@ public class GameBuilder extends View {
 	private Paint mCanvasPaint;
 	
     private Bitmap mCacheBitmap;
+    private Bitmap posBit;
+    private Bitmap negBit;
     private Rect mScreenSize = new Rect();
     private Rect cCell = new Rect();
+	private Rect typeBack;
+	private Rect faceUpBack;
+	private Rect sizeBack;
+	private Rect posRect;
+	private Rect negRect;
     private boolean mUseCache = false;
     private boolean itos = false;
 
@@ -42,6 +51,7 @@ public class GameBuilder extends View {
     private String sType;
     private String rP = "D";
     private Paint typeP = new Paint();
+    private Paint whitewash = new Paint();
     private int deckSize;
 
     protected ArrayList<Placeholder> places = new ArrayList<Placeholder>();
@@ -62,11 +72,13 @@ public class GameBuilder extends View {
 
     	mCanvasPaint = new Paint();
     	mCanvasPaint.setColor(0xFF228B22); // Green background
+		whitewash.setColor(0xFFFFFFFF);
     	mCanvasPaint.setAntiAlias(false);
     	mCanvasPaint.setFilterBitmap(false);
         textP.setColor(0xFF000000);
         typeP.setColor(0xFF000000);
     	setClickable(true);
+    	
     	
     }
     
@@ -75,6 +87,7 @@ public class GameBuilder extends View {
 
         mCanvasPaint = new Paint();
         mCanvasPaint.setColor(0xFF228B22); // Green background
+		whitewash.setColor(0xFFFFFFFF);
         mCanvasPaint.setAntiAlias(false);
         mCanvasPaint.setFilterBitmap(false);
         textP.setColor(0xFF000000);
@@ -87,6 +100,7 @@ public class GameBuilder extends View {
 
         mCanvasPaint = new Paint();
         mCanvasPaint.setColor(0xFF228B22); // Green background
+		whitewash.setColor(0xFFFFFFFF);
         mCanvasPaint.setAntiAlias(false);
         mCanvasPaint.setFilterBitmap(false);
         textP.setColor(0xFF000000);
@@ -121,6 +135,20 @@ public class GameBuilder extends View {
 		sType = "R";
 		places.add(new Placeholder((w-mCardSize.width())/2, (h-mCardSize.height())/2, deckSize*52, mCardSize.height(), mCardSize.width(), Deck.DeckType.EWaste1, getResources()));
 		buildInProgress = true;
+		typeBack = new Rect(mScreenSize.width()/4 - 16, mScreenSize.height()*7/8 - 24, 
+				mScreenSize.width()/4 + 32, mScreenSize.height()*7/8 + 8);
+		faceUpBack = new Rect(mScreenSize.width()/2 - 16, mScreenSize.height()*7/8 - 24, 
+				mScreenSize.width()/2 + 32, mScreenSize.height()*7/8 + 8);
+		sizeBack = new Rect(mScreenSize.width()*3/4 - 16, mScreenSize.height()*7/8 - 24, 
+				mScreenSize.width()*3/4 + 32, mScreenSize.height()*7/8 + 8);
+		posRect = new Rect(mScreenSize.width()*3/4 - 16, mScreenSize.height()*7/8 - 56, 
+				mScreenSize.width()*3/4 + 32, mScreenSize.height()*7/8 - 24);
+		negRect = new Rect(mScreenSize.width()*3/4 - 16, mScreenSize.height()*7/8 + 8, 
+				mScreenSize.width()*3/4 + 32, mScreenSize.height()*7/8 + 40);
+		Bitmap tmp = BitmapFactory.decodeResource(getResources(), R.raw.positive);
+		posBit = Bitmap.createScaledBitmap(tmp, posRect.width(), posRect.height(), true);
+		tmp  = BitmapFactory.decodeResource(getResources(), R.raw.negative);
+		negBit = Bitmap.createScaledBitmap(tmp, negRect.width(), negRect.height(), true);
     }
     
     /*
@@ -140,6 +168,7 @@ public class GameBuilder extends View {
             } else {
                     // No
                     mCanvasPaint.setStyle(Style.FILL);
+            		whitewash.setStyle(Style.FILL);
                     canvas.drawRect(mScreenSize, mCanvasPaint);
                     // Draw decks
                     for(Placeholder card : places){
@@ -147,9 +176,15 @@ public class GameBuilder extends View {
                     		((CustomReserve) card).doDraw(canvas);
                     	else
                     		card.doDraw(canvas);}
+                    canvas.drawRect(typeBack, whitewash);
+                    canvas.drawRect(faceUpBack, whitewash);
+                    canvas.drawRect(sizeBack, whitewash);
                     canvas.drawText(String.valueOf(alloc), mScreenSize.width()*3/4, mScreenSize.height()*7/8, textP);
                     canvas.drawText(sType, mScreenSize.width()/4, mScreenSize.height()*7/8, textP);
                     canvas.drawText(rP, mScreenSize.width()/2, mScreenSize.height()*7/8, textP);
+                    canvas.drawBitmap(posBit, posRect.left, posRect.top, null);
+                    canvas.drawBitmap(negBit, negRect.left, negRect.top, null);
+                    
             }
             if (mActiveStack != null) {
                 mActiveStack.doDraw(canvas);}
@@ -226,12 +261,12 @@ public class GameBuilder extends View {
     		int y = (int) event.getY();  
     		enableCache(false);
     		if(mActiveStack == null){
-    			if(Math.abs(x - mScreenSize.width()*3/4) < 32  && Math.abs(y - mScreenSize.height()*7/8) < 32){
-    				if(alloc < deckSize*52  && y < mScreenSize.height()*7/8)
+    			if(posRect.contains(x, y) || negRect.contains(x, y)){
+    				if(posRect.contains(x, y))
     					alloc++;
-    				else if(alloc > 0 && y > mScreenSize.height()*7/8)
+    				else if(negRect.contains(x, y))
     					alloc--;
-    			}else if(Math.abs(y - mScreenSize.height()*7/8) < 32 && Math.abs(x - mScreenSize.width()/4) < 32){
+    			}else if(typeBack.contains(x, y)){
     				switch(sType.charAt(0)){
     				case 'R':
     					sType = "W";
@@ -243,7 +278,7 @@ public class GameBuilder extends View {
     					sType = "R";
     					break;
     				}
-    			}else if(Math.abs(x - mScreenSize.width()/2) < 32  && Math.abs(y - mScreenSize.height()*7/8) < 32){
+    			}else if(faceUpBack.contains(x, y)){
     				switch(rP.charAt(0)){
     				case 'D':
     					rP = "U"; break;
