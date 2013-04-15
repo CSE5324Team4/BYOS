@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
 
 import com.uta.byos.Deck.DeckType;
@@ -34,12 +35,16 @@ public class CustomReserve extends Placeholder {
 	
 	@Override
 	public void doDraw(Canvas canvas){
-		int i = 0;
+		int i = 0; Rect tmp = new Rect(mRect); Paint black = new Paint();
+		black.setColor(Color.BLACK);
+		tmp.inset(3, 3);
+		canvas.drawRect(tmp, paint);
 		for(boolean b : mTurned){
 			int top = mRect.top + (i++)*10;
-			if(b)
+			if(b){
 				canvas.drawBitmap(faceUp, mRect.left, top, paint);
-			else
+				canvas.drawLine(mRect.left, top, mRect.left + mRect.width(), top, black);
+			}else
 				canvas.drawBitmap(getmBitmap(), mRect.left, top, paint);
 		}
 	}

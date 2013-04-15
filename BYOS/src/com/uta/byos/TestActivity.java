@@ -15,10 +15,12 @@ public class TestActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_test);
-		String input = getIntent().getExtras().getString(android.content.Intent.EXTRA_TEXT);
+		Bundle in = getIntent().getExtras();
+		String input = in.getString("layout");
+		String inputR = in.getString("rules");
 		View gT = findViewById(R.id.gameTest1);
 		GameTest gg = (GameTest) gT;
-		gg.constructFromInput(input);
+		gg.constructFromInput(input, inputR);
 	}
 
 	@Override

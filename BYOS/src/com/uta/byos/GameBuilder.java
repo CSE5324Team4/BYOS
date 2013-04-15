@@ -42,7 +42,7 @@ public class GameBuilder extends View {
     private String sType;
     private String rP = "D";
     private Paint typeP = new Paint();
-    private int deckSize = 2;
+    private int deckSize;
 
     protected ArrayList<Placeholder> places = new ArrayList<Placeholder>();
     private Placeholder mActiveStack;
@@ -50,7 +50,7 @@ public class GameBuilder extends View {
 	protected Placeholder menuDummyT;
 
     
-    private boolean buildInProgress = false;
+    public boolean buildInProgress = false;
     
     /*
      * Standard constructors for view objects in Android
@@ -141,20 +141,40 @@ public class GameBuilder extends View {
                     // No
                     mCanvasPaint.setStyle(Style.FILL);
                     canvas.drawRect(mScreenSize, mCanvasPaint);
-                    canvas.drawText(String.valueOf(alloc), mScreenSize.width()*3/4, mScreenSize.height()*7/8, textP);
-                    canvas.drawText(sType, mScreenSize.width()/4, mScreenSize.height()*7/8, textP);
-                    canvas.drawText(rP, mScreenSize.width()/2, mScreenSize.height()*7/8, textP);
                     // Draw decks
                     for(Placeholder card : places){
                     	if(card instanceof CustomReserve)
                     		((CustomReserve) card).doDraw(canvas);
                     	else
                     		card.doDraw(canvas);}
+                    canvas.drawText(String.valueOf(alloc), mScreenSize.width()*3/4, mScreenSize.height()*7/8, textP);
+                    canvas.drawText(sType, mScreenSize.width()/4, mScreenSize.height()*7/8, textP);
+                    canvas.drawText(rP, mScreenSize.width()/2, mScreenSize.height()*7/8, textP);
             }
             if (mActiveStack != null) {
                 mActiveStack.doDraw(canvas);}
            
 
+    }
+    
+    public void setDeckSize(int in){
+    	if(in == deckSize)
+    		return;
+    	int old = deckSize;
+    	deckSize = in;
+    	Placeholder main = places.get(0);
+    	int current = main.getSize();
+    	for(int i = 1; i < places.size(); i++){
+    		current += places.get(i).getSize();
+    		if(current > deckSize*52 && i != 0){
+    			main.setSize(main.getSize() + places.get(i).getSize());
+    			places.remove(i); i--;}
+    	}
+    	if(main.getSize() < deckSize*52)
+    		main.setSize(deckSize*52);
+    	else
+    		main.setSize(main.getSize() + (deckSize - old)*52);
+    	invalidate();
     }
     
     /*
@@ -198,6 +218,7 @@ public class GameBuilder extends View {
     				((CustomReserve) mActiveStack).setPos(getXCell(x)-mCardSize.width()/2, getYCell(y)-mCardSize.height()/2);
     			else
     				mActiveStack.setPos(getXCell(x)-mCardSize.width()/2, getYCell(y)-mCardSize.height()/2);}
+    		invalidate();
     		return true;
 
     	} else if (action == MotionEvent.ACTION_UP) {
@@ -292,7 +313,6 @@ public class GameBuilder extends View {
     	Deck.DeckType set;
     	if(s > main.getSize())
     		throw new ArithmeticException("Not enough cards!");
-    	main.setSize(main.getSize() - s);
     	switch(type.charAt(0)){
     	case 'S':
     		set = Deck.DeckType.EWaste1;
@@ -302,6 +322,7 @@ public class GameBuilder extends View {
     		set = Deck.DeckType.EWaste2;
     		break;
     	case 'R':
+        	main.setSize(main.getSize() - s);
     		places.add(new CustomReserve(x-mCardSize.width()/2, y-mCardSize.height()/2, s, mCardSize.height(), mCardSize.width(),
     				getResources(), rP.equals("U")));
     		return;
@@ -312,6 +333,7 @@ public class GameBuilder extends View {
     	default:
     		throw new ArithmeticException("Not a valid deck type");
     	}
+    	main.setSize(main.getSize() - s);
     	places.add(new Placeholder(x-mCardSize.width()/2, y-mCardSize.height()/2, s, mCardSize.height(), mCardSize.width(), set,
     			getResources()));
     }
@@ -424,6 +446,9 @@ public class GameBuilder extends View {
     	}
     	return data;
     }
+
+	public void initDeckSize(int in) {
+    	deckSize = in;}
 
     
 }

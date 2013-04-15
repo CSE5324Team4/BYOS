@@ -29,7 +29,7 @@ public class GameTest extends View {
 	private String tableBuild;
 	private int cardXCap;
 	private int cardYCap;
-	private String ruleBook = "b1ffdd";
+	private String ruleBook = "b1ff0";
 
 	public GameTest(Context context) {
 		super(context);
@@ -238,8 +238,9 @@ public class GameTest extends View {
 		}
 	}
 
-	public void constructFromInput(String input){  //TODO Rules should be constructed here.
-		tableBuild = input;
+	public void constructFromInput(String layout, String inputR){
+		tableBuild = layout;
+		ruleBook = inputR;
 	}
 
 
@@ -349,11 +350,13 @@ public class GameTest extends View {
 			return true;
 		else if(card.mTurned){
 			int pV = card.mParentCard.mCardValue;
-			switch(ruleBook.charAt(5)){
-			case 'a':
-				val = pV+Integer.parseInt(ruleBook.substring(1, 2));
-			case 'd':
-				val = pV-Integer.parseInt(ruleBook.substring(1, 2));
+			switch(ruleBook.charAt(4)){
+			case '1':
+			case '3':
+				val = pV+Integer.parseInt(ruleBook.substring(1, 2), 13); break;
+			case '0':
+			case '2':
+				val = pV-Integer.parseInt(ruleBook.substring(1, 2), 13); break;
 			default:
 				cV = val;
 			}
@@ -367,34 +370,34 @@ public class GameTest extends View {
 			}
 			if(mov)
 				switch (ruleBook.charAt(0)){
-				case '1':  //Only stacks with the same suit are movable
-				case '3':
+				case '0':  //Only stacks with the same suit are movable
+				case '2':
 				case 'b':
 					if(card.mCardLand == card.mParentCard.mCardLand)
 						return cardIsMoveable(card.mParentCard);
 					else
 						return false;
-				case '2': //Only stacks with the same color are movable
-				case '6':
+				case '1': //Only stacks with the same color are movable
+				case '5':
 				case 'a':
 					if(card.mBlack == card.mParentCard.mBlack)
 						return cardIsMoveable(card.mParentCard);
 					else
 						return false;
-				case '4': //Only stacks with alternating colors are movable
-				case '7':
-				case '0':
+				case '3': //Only stacks with alternating colors are movable
+				case '6':
+				case '9':
 					if(card.mBlack != card.mParentCard.mBlack)
 						return cardIsMoveable(card.mParentCard);
 					else
 						return false;
-				case '5':
-				case '9':
+				case '4':
+				case '8':
 					if(card.mCardLand != card.mParentCard.mCardLand)
 						return cardIsMoveable(card.mParentCard);
 					else
 						return false;
-				case '8':
+				case '7':
 					return true;
 				}}
 		return false;
@@ -524,10 +527,10 @@ public class GameTest extends View {
 		int val = 0;
 		boolean mov;
 		switch(ruleBook.charAt(4)){
-		case 'a':
-			val = tV+Integer.parseInt(ruleBook.substring(1,2)); break;
-		case 'd':
-			val = tV-Integer.parseInt(ruleBook.substring(1,2)); break;
+		case '0':
+			val = tV+Integer.parseInt(ruleBook.substring(1,2), 13); break;
+		case '1':
+			val = tV-Integer.parseInt(ruleBook.substring(1,2), 13); break;
 		default:
 			mV = val;
 		}
@@ -541,20 +544,20 @@ public class GameTest extends View {
 		}
 		if(mov)
 			switch(ruleBook.charAt(0)){
-			case '1': //If cards are to be built up in suit
+			case '0': //If cards are to be built up in suit
 				return movedCard.mCardLand == toCard.mCardLand;
-			case '2': //If cards are to be built up by the same color
-			case '3':
+			case '1': //If cards are to be built up by the same color
+			case '2':
 				return movedCard.mBlack && toCard.mBlack;
-			case '4': //If cards are to be built up by alternating color
+			case '3': //If cards are to be built up by alternating color
 				return !(movedCard.mBlack && toCard.mBlack);
-			case '5': //If cards are to be built up by changing suit
+			case '4': //If cards are to be built up by changing suit
+			case '5':
 			case '6':
-			case '7':
 				return movedCard.mCardLand != toCard.mCardLand;
+			case '7':
 			case '8':
 			case '9':
-			case '0':
 			case 'a':
 			case 'b':
 				return true;
