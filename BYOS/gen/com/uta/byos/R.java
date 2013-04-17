@@ -9,12 +9,8 @@ package com.uta.byos;
 
 public final class R {
     public static final class array {
-        public static final int order_list=0x7f090005;
-        public static final int pref_example_list_titles=0x7f090000;
-        public static final int pref_example_list_values=0x7f090001;
-        public static final int pref_sync_frequency_titles=0x7f090002;
-        public static final int pref_sync_frequency_values=0x7f090003;
-        public static final int rules_list=0x7f090004;
+        public static final int order_list=0x7f090001;
+        public static final int rules_list=0x7f090000;
     }
     public static final class attr {
         /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
@@ -115,38 +111,22 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
     }
     public static final class string {
         public static final int app_name=0x7f080000;
-        public static final int build_wrap=0x7f08001c;
-        public static final int deck_size=0x7f080019;
+        public static final int build_wrap=0x7f080010;
+        public static final int deck_size=0x7f08000c;
         public static final int dummy_button=0x7f080002;
         public static final int dummy_content=0x7f080001;
         public static final int hello_world=0x7f080003;
         public static final int how_many_cards=0x7f080007;
         public static final int menu_settings=0x7f080004;
-        public static final int move_wrap=0x7f08001d;
-        public static final int orderopt=0x7f08001e;
-        public static final int pref_build_int=0x7f08001b;
-        public static final int pref_default_display_name=0x7f08000f;
-        public static final int pref_description_social_recommendations=0x7f08000d;
-        /**  Example settings for Data & Sync 
-         */
-        public static final int pref_header_data_sync=0x7f080011;
+        public static final int move_wrap=0x7f080011;
+        public static final int orderopt=0x7f080012;
+        public static final int pref_build_int=0x7f08000e;
         /**  Strings related to Settings 
  Example General settings 
          */
         public static final int pref_header_general=0x7f08000b;
-        /**  Example settings for Notifications 
-         */
-        public static final int pref_header_notifications=0x7f080014;
-        public static final int pref_ringtone_silent=0x7f080017;
-        public static final int pref_title_add_friends_to_messages=0x7f080010;
-        public static final int pref_title_display_name=0x7f08000e;
-        public static final int pref_title_new_message_notifications=0x7f080015;
-        public static final int pref_title_ringtone=0x7f080016;
-        public static final int pref_title_social_recommendations=0x7f08000c;
-        public static final int pref_title_sync_frequency=0x7f080012;
-        public static final int pref_title_system_sync_settings=0x7f080013;
-        public static final int pref_title_vibrate=0x7f080018;
-        public static final int rulebook=0x7f08001a;
+        public static final int pref_move_int=0x7f08000f;
+        public static final int rulebook=0x7f08000d;
         public static final int switch_mode=0x7f080008;
         public static final int title_activity_game=0x7f080006;
         public static final int title_activity_settings=0x7f08000a;
@@ -191,7 +171,6 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
     public static final class xml {
         public static final int pref_general=0x7f040000;
         public static final int pref_headers=0x7f040001;
-        public static final int pref_notification=0x7f040002;
     }
     public static final class styleable {
         /** 
