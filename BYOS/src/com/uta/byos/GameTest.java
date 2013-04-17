@@ -435,6 +435,7 @@ public class GameTest extends View {
 					// Accept card move or not?
 					if (acceptCardMove(fromDeck, toDeck, mActiveCard)) {
 						toDeck.addCard(fromDeck, mActiveCard, topOfOtherCards);
+						fromDeck.revealTopCard();
 					} else {
 						mActiveCard.cancelMove(true);
 					}
@@ -451,10 +452,10 @@ public class GameTest extends View {
 					if(to.mDeckType == Deck.DeckType.EWaste2){
 						waste = to;
 						break;}
-				for (int i=0;i<waste.mCards.size();) {
+				for (int i=0;i<waste.mCards.size(); i++) {
 					Card card = waste.mCards.get(i);
 					card.mTurned = false;
-					toDeck.addCard(waste, card, true);
+					toDeck.addCard(waste, card, true); i--;
 				}
 			}
 		}

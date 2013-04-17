@@ -17,10 +17,6 @@ public class GameActivity extends Activity{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game);
-//		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-//		String dS =  sharedPref.getString("deck_size", "1");
-//		GameBuilder gB = (GameBuilder) findViewById(R.id.gameBuilder1);
-//		gB.initDeckSize(Integer.valueOf(dS));
 	}
 
 	@Override
@@ -75,6 +71,7 @@ public class GameActivity extends Activity{
 		else
 			out += 'f';
 		out += parseFromListPreference("order", sharedPref.getString("order", "Build descending"));
+//		out += ";" + Integer.toHexString(sharedPref.getInt("move_int", -1));
 		return out;
 	}
 	

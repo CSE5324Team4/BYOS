@@ -186,4 +186,12 @@ public class Deck {
 	public int getY(){
 		return mY;
 	}
+
+	public void revealTopCard() {
+		int index = mCards.size();
+		if(index == 0)
+			return;
+		Card top = mCards.get(index-1);
+		top.mTurned = true;
+	}
 }

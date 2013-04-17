@@ -64,6 +64,7 @@ public class SettingsActivity extends PreferenceActivity {
 		bindPreferenceSummaryToValue(findPreference("deck_size"));
 		bindPreferenceSummaryToValue(findPreference("rulebook"));
 		bindPreferenceSummaryToValue(findPreference("build_int"));
+		bindPreferenceSummaryToValue(findPreference("move_int"));
 		bindPreferenceSummaryToValue(findPreference("order"));
 	}
 
@@ -173,6 +174,7 @@ public class SettingsActivity extends PreferenceActivity {
 			bindPreferenceSummaryToValue(findPreference("deck_size"));
 			bindPreferenceSummaryToValue(findPreference("rulebook"));
 			bindPreferenceSummaryToValue(findPreference("build_int"));
+			bindPreferenceSummaryToValue(findPreference("move_int"));
 			bindPreferenceSummaryToValue(findPreference("build_wrap"));
 			bindPreferenceSummaryToValue(findPreference("move_wrap"));
 			bindPreferenceSummaryToValue(findPreference("order_opt"));
