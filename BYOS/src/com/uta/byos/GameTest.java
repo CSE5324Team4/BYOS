@@ -549,9 +549,9 @@ public class GameTest extends View {
 				return movedCard.mCardLand == toCard.mCardLand;
 			case '1': //If cards are to be built up by the same color
 			case '2':
-				return movedCard.mBlack && toCard.mBlack;
+				return movedCard.mBlack == toCard.mBlack;
 			case '3': //If cards are to be built up by alternating color
-				return !(movedCard.mBlack && toCard.mBlack);
+				return movedCard.mBlack != toCard.mBlack;
 			case '4': //If cards are to be built up by changing suit
 			case '5':
 			case '6':

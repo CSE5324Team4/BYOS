@@ -262,9 +262,9 @@ public class GameBuilder extends View {
     		enableCache(false);
     		if(mActiveStack == null){
     			if(posRect.contains(x, y) || negRect.contains(x, y)){
-    				if(posRect.contains(x, y))
+    				if(posRect.contains(x, y) && alloc > 0)
     					alloc++;
-    				else if(negRect.contains(x, y))
+    				else if(negRect.contains(x, y) && alloc < deckSize*52)
     					alloc--;
     			}else if(typeBack.contains(x, y)){
     				switch(sType.charAt(0)){
