@@ -18,9 +18,10 @@ public class TestActivity extends Activity {
 		Bundle in = getIntent().getExtras();
 		String input = in.getString("layout");
 		String inputR = in.getString("rules");
+		int limit = in.getInt("move limit");
 		View gT = findViewById(R.id.gameTest1);
 		GameTest gg = (GameTest) gT;
-		gg.constructFromInput(input, inputR);
+		gg.constructFromInput(input, inputR, limit);
 	}
 
 	@Override

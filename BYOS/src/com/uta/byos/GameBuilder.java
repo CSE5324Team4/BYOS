@@ -195,21 +195,20 @@ public class GameBuilder extends View {
     public void setDeckSize(int in){
     	if(in == deckSize)
     		return;
-    	int old = deckSize;
-    	deckSize = in;
-    	Placeholder main = places.get(0);
-    	int current = main.getSize();
-    	for(int i = 1; i < places.size(); i++){
-    		current += places.get(i).getSize();
-    		if(current > deckSize*52 && i != 0){
-    			main.setSize(main.getSize() + places.get(i).getSize());
-    			places.remove(i); i--;}
-    	}
-    	if(main.getSize() < deckSize*52)
-    		main.setSize(deckSize*52);
-    	else
-    		main.setSize(main.getSize() + (deckSize - old)*52);
     	invalidate();
+    	Placeholder main = places.get(0);
+    	int post = main.getSize() + (in-deckSize)*52;
+    	deckSize = in;
+    	if(post > 0){
+    		main.setSize(post);
+    		return;}
+    	int current = main.getSize();
+    	for(int i = 1; i < places.size(); i++)
+    		if(current < deckSize*52)
+    			current += places.get(i).getSize();
+    		else{
+    			places.remove(i); i--;}
+    	main.incSize(deckSize*52 - current);
     }
     
     /*
@@ -307,26 +306,7 @@ public class GameBuilder extends View {
 
     }
     
-//    @Override
-//    public boolean onKeyUp(int keyCode, KeyEvent event){
-//    	switch(keyCode){
-//    	case(KeyEvent.KEYCODE_DPAD_DOWN):
-//    		if(alloc > 1)
-//    			alloc--;
-//    	break;
-//    	case(KeyEvent.KEYCODE_DPAD_UP):
-//    		if(alloc < 52)
-//    			alloc++;
-//    	break;
-//    	}
-//    	invalidate();
-//    	return true;
-//    }
-    
- 
-//    public Placeholder getDeckForActivity(int x, int y){
-//    	return getDeckUnderTouch(x, y);
-//    }
+
     
     /*
      * Adds a stack to the crafting table

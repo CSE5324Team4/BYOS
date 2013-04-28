@@ -10,7 +10,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Paint.Style;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -20,15 +19,15 @@ public class GameTest extends View {
 	private ArrayList<Card> mCards = new ArrayList<Card>();
 	private Rect mScreenSize = new Rect();
 	private Rect mCardSize = new Rect();
-	private int mCardCap;
 	private ArrayList<Deck> mDecks = new ArrayList<Deck>();
-	private boolean new_game = true;
 	private boolean mUseCache;
+	private boolean foundPres = false;
 	private Bitmap mCacheBitmap;
 	private Card mActiveCard;
 	private String tableBuild;
 	private int cardXCap;
 	private int cardYCap;
+	private int limit;
 	private String ruleBook = "b1ff0";
 
 	public GameTest(Context context) {
@@ -80,11 +79,7 @@ public class GameTest extends View {
 		// Calculate card and decks sizes and positions
 		int cw = w / 11;
 		mCardSize.set(0, 0, cw, (int) (cw * 1.5));
-
-		int freeSize = w - cw * 7;
-		mCardCap = freeSize / (6 + 4 * 2);
-
-		int cy = (int) (mScreenSize.height() * 0.35);
+		
 		for(int i = 0; i < Integer.parseInt(tableBuild.split(":")[0]); i++){
 			mCards.add(new Card(1, Card.CardLand.EClub, 0, getResources(), 0, 0,
 					mCardSize.width(), mCardSize.height(), R.raw.club1));
@@ -213,13 +208,14 @@ public class GameTest extends View {
 				break;
 			case 'F':
 				waste = false;
+				foundPres = true;
 				set = Deck.DeckType.ETarget;
 				break;
 			default:
 				throw new ArithmeticException("Not a valid deck type");
 			}
 			tar = new Deck(set, Integer.parseInt(p[1]), Integer.parseInt(p[2]),mCardSize.width(),mCardSize.height());
-			if(set == Deck.DeckType.ESource)
+			if(set == Deck.DeckType.ESource){
 				for(int l=0; l < p[3].length(); l++){
 					c = mCards.remove(deal.nextInt(mCards.size()));
 					if(p[3].charAt(l) == 'U'){
@@ -229,6 +225,7 @@ public class GameTest extends View {
 					}
 					tar.addCard(c, false);
 				}
+				tar.revealTopCard();}
 			else{			
 				limit = Integer.parseInt(p[3]) - ((set == Deck.DeckType.ESource) ? 1 : 0);
 				for(int j = 0; j < limit; j++){
@@ -238,9 +235,10 @@ public class GameTest extends View {
 		}
 	}
 
-	public void constructFromInput(String layout, String inputR){
+	public void constructFromInput(String layout, String inputR, int lim){
 		tableBuild = layout;
 		ruleBook = inputR;
+		limit = lim;
 	}
 
 
@@ -302,7 +300,7 @@ public class GameTest extends View {
 
 			// Card founds?
 			if (mActiveCard != null) {
-				if (!cardIsMoveable(mActiveCard))
+				if (!cardIsMoveable(mActiveCard, limit))
 					mActiveCard = null;
 				else{
 					cardXCap = x - mActiveCard.mRect.left;
@@ -340,12 +338,13 @@ public class GameTest extends View {
 
 	}
 
-	private boolean cardIsMoveable(Card card) {
+	private boolean cardIsMoveable(Card card, int limit2) {
 		// TODO Auto-generated method stubint tV = toCard.mCardValue;
 		int cV = card.mCardValue;
 		int val = 0;
 		boolean mov;
-		
+		if(limit2 != -1 && limit2 == 0)
+			return false;
 		if(card.mParentCard == null)
 			return true;
 		else if(card.mTurned){
@@ -358,7 +357,7 @@ public class GameTest extends View {
 			case '2':
 				val = pV-Integer.parseInt(ruleBook.substring(1, 2), 13); break;
 			default:
-				cV = val;
+				val = (Math.abs(pV - cV) == Integer.parseInt(ruleBook.substring(1,2), 13)) ? cV:val;
 			}
 			switch(ruleBook.charAt(3)){
 			case 't':
@@ -374,27 +373,27 @@ public class GameTest extends View {
 				case '2':
 				case 'b':
 					if(card.mCardLand == card.mParentCard.mCardLand)
-						return cardIsMoveable(card.mParentCard);
+						return cardIsMoveable(card.mParentCard, limit2-1);
 					else
 						return false;
 				case '1': //Only stacks with the same color are movable
 				case '5':
-				case 'a':
+				case '9':
 					if(card.mBlack == card.mParentCard.mBlack)
-						return cardIsMoveable(card.mParentCard);
+						return cardIsMoveable(card.mParentCard, limit2-1);
 					else
 						return false;
 				case '3': //Only stacks with alternating colors are movable
 				case '6':
-				case '9':
+				case 'a':
 					if(card.mBlack != card.mParentCard.mBlack)
-						return cardIsMoveable(card.mParentCard);
+						return cardIsMoveable(card.mParentCard, limit2-1);
 					else
 						return false;
 				case '4':
 				case '8':
 					if(card.mCardLand != card.mParentCard.mCardLand)
-						return cardIsMoveable(card.mParentCard);
+						return cardIsMoveable(card.mParentCard, limit2-1);
 					else
 						return false;
 				case '7':
@@ -435,6 +434,8 @@ public class GameTest extends View {
 					// Accept card move or not?
 					if (acceptCardMove(fromDeck, toDeck, mActiveCard)) {
 						toDeck.addCard(fromDeck, mActiveCard, topOfOtherCards);
+						if(!foundPres)
+						removeIfComplete(mActiveCard);
 						fromDeck.revealTopCard();
 					} else {
 						mActiveCard.cancelMove(true);
@@ -460,6 +461,19 @@ public class GameTest extends View {
 			}
 		}
 		mActiveCard = null;
+	}
+	
+	private void removeIfComplete(Card base){
+		Deck scan = base.mOwnerDeck;
+		int option = Integer.parseInt(ruleBook.substring(5,6));
+		int old;
+		if(base.mCardValue != option || option != 0)
+		for(int i = 0; i < 12; i++){
+			old = base.mCardValue;
+			base = scan.mCards.get(scan.mCards.indexOf(base)-1);
+			if(old != base.mCardValue + 1)
+				return;}
+		scan.removeCard(base);
 	}
 	
 	private void dealToTableau(Deck stock){
@@ -514,8 +528,8 @@ public class GameTest extends View {
 					card.mCardValue != 13 && to.mDeckType == Deck.DeckType.ESource)
 				return false;
 
-			// Ace card must be the first card in foundation
-			if (to.mDeckType == Deck.DeckType.ETarget && to.mCards.size() == 0 && card.mCardValue != 1)
+			// Ace card must be the first card in foundation <Team 4 comment> Changeable
+			if (to.mDeckType == Deck.DeckType.ETarget && to.mCards.size() == 0 && (Integer.parseInt(ruleBook.substring(5, 6)) != 0 || card.mCardValue != Integer.parseInt(ruleBook.substring(5, 6))))
 				return false;
 		}
 
@@ -526,14 +540,14 @@ public class GameTest extends View {
 		int tV = toCard.mCardValue;
 		int mV = movedCard.mCardValue;
 		int val = 0;
-		boolean mov;
+		boolean mov = false;
 		switch(ruleBook.charAt(4)){
 		case '0':
 			val = tV+Integer.parseInt(ruleBook.substring(1,2), 13); break;
 		case '1':
 			val = tV-Integer.parseInt(ruleBook.substring(1,2), 13); break;
 		default:
-			mV = val;
+			val = (Math.abs(tV - mV) == Integer.parseInt(ruleBook.substring(1,2), 13)) ? mV:0;
 		}
 		switch(ruleBook.charAt(2)){
 		case 't':

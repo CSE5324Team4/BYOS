@@ -51,11 +51,19 @@
         android:title="@string/move_wrap" />
     
     <ListPreference
-        android:defaultValue="2"
+        android:defaultValue="Alternating-Alternating"
         android:entries="@array/order_list"
         android:entryValues="@array/order_list"
         android:key="order"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
         android:title="@string/orderopt" />
+    <ListPreference
+        android:defaultValue="Ace"
+        android:entries="@array/rank_list"
+        android:entryValues="@array/rank_list"
+        android:key="startfound"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="@string/foundstart"/>
 </PreferenceScreen>

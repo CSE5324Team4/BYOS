@@ -10,6 +10,8 @@ package com.uta.byos;
 public final class R {
     public static final class array {
         public static final int order_list=0x7f090001;
+        public static final int rank_list=0x7f090002;
+        public static final int rank_value=0x7f090003;
         public static final int rules_list=0x7f090000;
     }
     public static final class attr {
@@ -115,6 +117,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int deck_size=0x7f08000c;
         public static final int dummy_button=0x7f080002;
         public static final int dummy_content=0x7f080001;
+        public static final int foundstart=0x7f080013;
         public static final int hello_world=0x7f080003;
         public static final int how_many_cards=0x7f080007;
         public static final int menu_settings=0x7f080004;

@@ -37,6 +37,7 @@ public class GameActivity extends Activity{
 			View gB = findViewById(R.id.gameBuilder1);
 			i.putExtra("layout", ((GameBuilder) gB).toString());
 			i.putExtra("rules", rules);
+			i.putExtra("move limit", Integer.parseInt( sharedPref.getString("move_int", "-1") ) );
 			startActivity(i);
 			return true;
 		case R.id.menu_settings:
@@ -71,7 +72,7 @@ public class GameActivity extends Activity{
 		else
 			out += 'f';
 		out += parseFromListPreference("order", sharedPref.getString("order", "Build descending"));
-//		out += ";" + Integer.toHexString(sharedPref.getInt("move_int", -1));
+		out += parseFromListPreference("startfound", sharedPref.getString("startfound", "Ace"));
 		return out;
 	}
 	
@@ -101,6 +102,25 @@ public class GameActivity extends Activity{
 			for(int i = 0; i < optin.length; i++)
 				if (optin[i].equals(opt))
 					return Integer.toHexString(i);
+		} else if(name.equals("startfound")){
+			int index = 1;
+			String[] optin = {"None"
+	        ,"Ace"
+	        ,"2"
+	        ,"3"
+	        ,"4"
+	        ,"5"
+	        ,"6"
+	        ,"7"
+	        ,"8"
+	        ,"9"
+	        ,"10"
+	        ,"Jack"
+	        ,"Queen"
+	        ,"King"};
+			for(int i = 0; i < optin.length; i++)
+				if(optin[i].equals(opt)){
+					return Integer.toString(i);}
 		}
 		return "2";
 	

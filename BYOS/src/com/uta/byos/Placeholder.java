@@ -104,6 +104,10 @@ public class Placeholder {
 		size = s;
 	}
 	
+	public void incSize(int s){
+		size += s;
+	}
+	
 	public boolean isVisible() {
 		return mVisible;
 	}

@@ -36,6 +36,39 @@
         <item>Move descending</item>
         <item>None</item>
     </string-array>
+    <string name="foundstart">Foundation starting card</string>
+    <string-array name="rank_list">
+        <item>None</item>
+        <item>Ace</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>Jack</item>
+        <item>Queen</item>
+        <item>King</item>
+    </string-array>
+    <integer-array name="rank_value">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+    </integer-array>
     
 
 </resources>
