@@ -73,6 +73,7 @@ public class GameActivity extends Activity{
 			out += 'f';
 		out += parseFromListPreference("order", sharedPref.getString("order", "Build descending"));
 		out += parseFromListPreference("startfound", sharedPref.getString("startfound", "Ace"));
+		out += parseFromListPreference("start_res", sharedPref.getString("start_res", "King"));
 		return out;
 	}
 	
@@ -102,8 +103,7 @@ public class GameActivity extends Activity{
 			for(int i = 0; i < optin.length; i++)
 				if (optin[i].equals(opt))
 					return Integer.toHexString(i);
-		} else if(name.equals("startfound")){
-			int index = 1;
+		} else if(name.equals("startfound") || name.equals("start_res")){
 			String[] optin = {"None"
 	        ,"Ace"
 	        ,"2"
@@ -120,7 +120,7 @@ public class GameActivity extends Activity{
 	        ,"King"};
 			for(int i = 0; i < optin.length; i++)
 				if(optin[i].equals(opt)){
-					return Integer.toString(i);}
+					return Integer.toHexString(i);}
 		}
 		return "2";
 	

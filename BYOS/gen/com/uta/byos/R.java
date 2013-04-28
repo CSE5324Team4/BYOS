@@ -129,6 +129,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
          */
         public static final int pref_header_general=0x7f08000b;
         public static final int pref_move_int=0x7f08000f;
+        public static final int resvstart=0x7f080014;
         public static final int rulebook=0x7f08000d;
         public static final int switch_mode=0x7f080008;
         public static final int title_activity_game=0x7f080006;

@@ -66,6 +66,8 @@ public class SettingsActivity extends PreferenceActivity {
 		bindPreferenceSummaryToValue(findPreference("build_int"));
 		bindPreferenceSummaryToValue(findPreference("move_int"));
 		bindPreferenceSummaryToValue(findPreference("order"));
+		bindPreferenceSummaryToValue(findPreference("startfound"));
+		bindPreferenceSummaryToValue(findPreference("start_res"));
 	}
 
 	/** {@inheritDoc} */
@@ -166,11 +168,7 @@ public class SettingsActivity extends PreferenceActivity {
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
 			addPreferencesFromResource(R.xml.pref_general);
-
-			// Bind the summaries of EditText/List/Dialog/Ringtone preferences
-			// to their values. When their values change, their summaries are
-			// updated to reflect the new value, per the Android Design
-			// guidelines.
+			
 			bindPreferenceSummaryToValue(findPreference("deck_size"));
 			bindPreferenceSummaryToValue(findPreference("rulebook"));
 			bindPreferenceSummaryToValue(findPreference("build_int"));
@@ -178,6 +176,8 @@ public class SettingsActivity extends PreferenceActivity {
 			bindPreferenceSummaryToValue(findPreference("build_wrap"));
 			bindPreferenceSummaryToValue(findPreference("move_wrap"));
 			bindPreferenceSummaryToValue(findPreference("order_opt"));
+			bindPreferenceSummaryToValue(findPreference("startfound"));
+			bindPreferenceSummaryToValue(findPreference("start_res"));
 		}
 	}	
 	

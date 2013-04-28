@@ -454,10 +454,16 @@ public class GameTest extends View {
 						waste = to;
 						break;}
 				Card card = null;
-				for (int i = 0; i < waste.mCards.size(); i++) {
+				for (int i = waste.mCards.size()-1; i >= 0; i--) {
 					card = waste.mCards.get(i);
-					card.mTurned = false;}
-				toDeck.addCard(waste, card, true);
+					card.mTurned = false;
+					toDeck.addCard(waste, card, true);}
+//				for (int i = 0; i < toDeck.mCards.size(); i++) {
+//					card = toDeck.mCards.get(i);
+//					waste.addCard(toDeck, card, true); i--;}
+//				for (int i = 0; i < waste.mCards.size(); i++) {
+//					card = waste.mCards.get(i);
+//					toDeck.addCard(waste, card, true); i--;}
 			}
 		}
 		mActiveCard = null;
@@ -471,7 +477,7 @@ public class GameTest extends View {
 			for(int i = 0; i < 12; i++){
 				old = base.mCardValue;
 				base = scan.mCards.get(scan.mCards.indexOf(base)-1);
-				if(old != base.mCardValue + 1)
+				if(old != base.mCardValue - 1 || !base.mTurned)
 					return;}
 			mDecks.remove(scan);}
 	}
@@ -491,16 +497,7 @@ public class GameTest extends View {
 
 	private boolean acceptCardMove(Deck from, Deck to, Card card) {
 		Card topOfThisCard=null;
-
-		if (to.mCards.size()>0) {
-			topOfThisCard = to.mCards.get(to.mCards.size()-1);
-		}
-
 		// Check deck issuess
-		if (topOfThisCard!=null && !topOfThisCard.mTurned) {
-			return false;
-		}
-
 		if (from.mDeckType != Deck.DeckType.ESource && from.mDeckType != Deck.DeckType.EWaste2)
 			return false;
 
@@ -513,6 +510,10 @@ public class GameTest extends View {
 
 		// Check card issues
 		if(to.mCards.size()>0) {
+			topOfThisCard = to.mCards.get(to.mCards.size()-1);
+			if (topOfThisCard!=null && !topOfThisCard.mTurned) {
+				return false;
+			}
 			if (to.mDeckType == Deck.DeckType.ESource) {           		
 				if (!checkTableauMove(card, topOfThisCard))
 					return false;
@@ -523,13 +524,15 @@ public class GameTest extends View {
 		} else {
 			// Moving top of empty deck
 
-			// If there is no cards in the deck, then the first one must be King card in source decks 1
-			if (to.mCards.size() == 0 &&
-					card.mCardValue != 13 && to.mDeckType == Deck.DeckType.ESource)
+			
+			if (card.mCardValue != Integer.parseInt(ruleBook.substring(6,7), 14) &&
+					Integer.parseInt(ruleBook.substring(6,7), 14) != 0
+					&& to.mDeckType == Deck.DeckType.ESource)
 				return false;
 
 			// Ace card must be the first card in foundation <Team 4 comment> Changeable
-			if (to.mDeckType == Deck.DeckType.ETarget && to.mCards.size() == 0 && (Integer.parseInt(ruleBook.substring(5, 6)) != 0 && card.mCardValue != Integer.parseInt(ruleBook.substring(5, 6))))
+			if (to.mDeckType == Deck.DeckType.ETarget && to.mCards.size() == 0 && (Integer.parseInt(ruleBook.substring(5, 6), 14) != 0
+					&& card.mCardValue != Integer.parseInt(ruleBook.substring(5, 6), 14)))
 				return false;
 		}
 

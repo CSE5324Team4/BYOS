@@ -69,6 +69,7 @@
         <item>12</item>
         <item>13</item>
     </integer-array>
+    <string name="resvstart">Reserve starting card</string>
     
 
 </resources>
