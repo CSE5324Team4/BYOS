@@ -435,7 +435,7 @@ public class GameTest extends View {
 					if (acceptCardMove(fromDeck, toDeck, mActiveCard)) {
 						toDeck.addCard(fromDeck, mActiveCard, topOfOtherCards);
 						if(!foundPres)
-						removeIfComplete(mActiveCard);
+							removeIfComplete(mActiveCard);
 						fromDeck.revealTopCard();
 					} else {
 						mActiveCard.cancelMove(true);
@@ -453,11 +453,11 @@ public class GameTest extends View {
 					if(to.mDeckType == Deck.DeckType.EWaste2){
 						waste = to;
 						break;}
-				for (int i=0;i<waste.mCards.size(); i++) {
-					Card card = waste.mCards.get(i);
-					card.mTurned = false;
-					toDeck.addCard(waste, card, true); i--;
-				}
+				Card card = null;
+				for (int i = 0; i < waste.mCards.size(); i++) {
+					card = waste.mCards.get(i);
+					card.mTurned = false;}
+				toDeck.addCard(waste, card, true);
 			}
 		}
 		mActiveCard = null;
@@ -467,13 +467,13 @@ public class GameTest extends View {
 		Deck scan = base.mOwnerDeck;
 		int option = Integer.parseInt(ruleBook.substring(5,6));
 		int old;
-		if(base.mCardValue != option || option != 0)
-		for(int i = 0; i < 12; i++){
-			old = base.mCardValue;
-			base = scan.mCards.get(scan.mCards.indexOf(base)-1);
-			if(old != base.mCardValue + 1)
-				return;}
-		scan.removeCard(base);
+		if(base.mCardValue == option || option == 0){
+			for(int i = 0; i < 12; i++){
+				old = base.mCardValue;
+				base = scan.mCards.get(scan.mCards.indexOf(base)-1);
+				if(old != base.mCardValue + 1)
+					return;}
+			mDecks.remove(scan);}
 	}
 	
 	private void dealToTableau(Deck stock){
@@ -529,7 +529,7 @@ public class GameTest extends View {
 				return false;
 
 			// Ace card must be the first card in foundation <Team 4 comment> Changeable
-			if (to.mDeckType == Deck.DeckType.ETarget && to.mCards.size() == 0 && (Integer.parseInt(ruleBook.substring(5, 6)) != 0 || card.mCardValue != Integer.parseInt(ruleBook.substring(5, 6))))
+			if (to.mDeckType == Deck.DeckType.ETarget && to.mCards.size() == 0 && (Integer.parseInt(ruleBook.substring(5, 6)) != 0 && card.mCardValue != Integer.parseInt(ruleBook.substring(5, 6))))
 				return false;
 		}
 
