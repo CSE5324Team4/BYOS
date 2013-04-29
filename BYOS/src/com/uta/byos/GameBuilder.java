@@ -1,6 +1,6 @@
 package com.uta.byos;
 
-/*
+/**
  * This class provides the "crafting tableaux" so-to-speak for the user to create his own custom card games.
  * All javadoc was written by Matthew Waller
  * @author Matthew Waller
@@ -60,7 +60,7 @@ public class GameBuilder extends View {
     
     public boolean buildInProgress = false;
     
-    /*
+    /**
      * Standard constructors for view objects in Android
      * @see android.view.View
      */
@@ -107,7 +107,7 @@ public class GameBuilder extends View {
     	
     }
     
-    /*
+    /**
      * (non-Javadoc)
      * Creates a new table if it is newly initialized otherwise
      * preserves and redraws the current elements for user
@@ -149,7 +149,7 @@ public class GameBuilder extends View {
 		negBit = Bitmap.createScaledBitmap(tmp, negRect.width(), negRect.height(), true);
     }
     
-    /*
+    /**
      * (non-Javadoc)
      * Based on Tero's original algorithm
      * @see android.view.View#onDraw(android.graphics.Canvas)
@@ -188,7 +188,7 @@ public class GameBuilder extends View {
                 mActiveStack.doDraw(canvas);}
     }
     
-    /*
+    /**
      * Used to set deck size on construction
      * @param in	Number of 52 card decks used in the game being constructed
      */
@@ -211,7 +211,7 @@ public class GameBuilder extends View {
     	main.incSize(deckSize*52 - current);
     }
     
-    /*
+    /**
      * Based on Tero's original algorithm
      * @see TableauView enableCache
      */
@@ -227,7 +227,7 @@ public class GameBuilder extends View {
     	mUseCache = enabled;
     }
     
-    /*
+    /**
      * (non-Javadoc)
      * Handles interactivity within the view
      * @see android.view.View#onTouchEvent(android.view.MotionEvent)
@@ -308,7 +308,7 @@ public class GameBuilder extends View {
     
 
     
-    /*
+    /**
      * Adds a stack to the crafting table
      * @param s		Size of the deck to be added
      * @param type	Any string denoting the type of deck to be added (Reserve/Waste/Foundation/Stock)
@@ -353,9 +353,8 @@ public class GameBuilder extends View {
     			getResources()));
     }
 	
-	/*
+	/**
 	 * Determines whether or not to remove a placeholder based where the user tapped the screen
-	 * @param x,y	Coordinates of the user's tap
 	 * @see			itos
 	 */
 	
@@ -390,7 +389,7 @@ public class GameBuilder extends View {
     	}
 	}
     
-    /*
+    /**
      * Finds the placeholder selected the user is "touching"
      * @param  x			X-coordinate of the click
      * @param  y			Y-coordinate of the click
@@ -414,7 +413,7 @@ public class GameBuilder extends View {
 		return null;
     }
     
-    /*
+    /**
      * Finds and removes the placeholder selected by the user
      * @param x	X-coordinate of the tap
      * @param y	Y-coordinate of the tap
@@ -430,7 +429,7 @@ public class GameBuilder extends View {
     	return adj*mCardSize.height() + mCardSize.height()/2;
     }
     
-    /*
+    /**
      * (non-Javadoc)
      * Used when constructing GameTest
      * @see android.view.View#toString()
@@ -458,6 +457,11 @@ public class GameBuilder extends View {
     	}
     	return data;
     }
+    
+    /**
+     * Creates the initial size of the main waste pile at startup
+     * @param in
+     */
 
 	public void initDeckSize(int in) {
     	deckSize = in;}

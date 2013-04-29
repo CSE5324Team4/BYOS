@@ -59,6 +59,13 @@ public class GameActivity extends Activity{
 			gB.initDeckSize(Integer.valueOf(sharedPref.getString("deck_size", "1")));
 	}
 	
+	/**
+	 * Upon selecting "Switch Mode" this method creates the rule book for GameTest to interpret during gameplay
+	 * @param sharedPref	The user's selected preferences
+	 * @return A seven character string that is to be used as the rule book
+	 * @see	GameTest#ruleBook
+	 */
+	
 	private String parseFromSharedPref(SharedPreferences sharedPref){
 		String out = "";
 		out += parseFromListPreference("rulebook", sharedPref.getString("rulebook", "Alternating-Alternating"));
@@ -76,6 +83,13 @@ public class GameActivity extends Activity{
 		out += parseFromListPreference("start_res", sharedPref.getString("start_res", "King"));
 		return out;
 	}
+	
+	/**
+	 * Used by parseFromSharedPref for parsing ListPreference selections
+	 * @param name Name of android:key value
+	 * @param opt  The option selected 
+	 * @return The index of option selected from the menu represented by name parameter
+	 */
 	
 	private String parseFromListPreference(String name, String opt){
 		if(name.equals("rulebook")){

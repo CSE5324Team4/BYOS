@@ -8,7 +8,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
-/*
+/**
  * The class is for dummy decks placed throughout a GameBuilder so that when a user tests a game
  * he builds they'll be converted into their appropriate decks
  * @author Matthew Waller 
@@ -28,7 +28,7 @@ public class Placeholder {
 	protected Paint paint = new Paint();
 	protected Rect mBackgroundRect;
 	
-	/*
+	/**
 	 * Constructor used for copying
 	 * @param   copyFrom	Placeholder to be copied
 	 * @return	A copy of copyFrom
@@ -41,7 +41,7 @@ public class Placeholder {
 	 * 
 	 */
 	
-	/*
+	/**
 	 * Base constructor for placing specific Placeholders with a specific deckType in mind
 	 * @param x				Target x-coordinate
 	 * @param y 			Target y-coordinate
@@ -71,7 +71,7 @@ public class Placeholder {
 		paint.setColor(Color.WHITE);
 	}
 	
-	/*
+	/**
 	 * Based on Tero's original algorithm
 	 * @see TableauView#doDraw
 	 */
@@ -86,7 +86,9 @@ public class Placeholder {
 			tmp.inset(3, 3);
 			canvas.drawRect(tmp, paint);}
 	}
-	/*
+	/**
+	 * Sets the position of a deck in GameTest
+	 * @param x, y	Coordinates
 	 * @see TableauView#setPos
 	 */
 
@@ -98,6 +100,13 @@ public class Placeholder {
 
 	public int getX(){ return mX;}
 	public int getY(){ return mY;}
+	
+	/**
+	 * Retrieves the size of the potential deck
+	 * @return	The number of cards this deck will hold at the start of play
+	 * @see		Deck
+	 */
+	
 	public int getSize(){ return size;}
 	
 	public void setSize(int s){
@@ -108,15 +117,11 @@ public class Placeholder {
 		size += s;
 	}
 	
-	public boolean isVisible() {
-		return mVisible;
-	}
-
-	public void setVisible(boolean visible) {
-		mVisible = visible;
-	}
-	
-	/*
+	/**
+	 * Determines whether or not the deck has been tapped by the user
+	 * @param x		X-coordinate of the user's touch
+	 * @param y		Y-coordinate of the user's touch
+	 * @return		Whether or not x and y are within the Placeholder's bounds
 	 * @see Deck#isUnderTouch
 	 */
 

@@ -2,15 +2,19 @@ package com.uta.byos;
 
 import android.os.Bundle;
 import android.app.Activity;
-import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+
+/**
+ * This class displays the GameTest object used during gameplay 
+ * @author Matthew Waller
+ *
+ */
 
 public class TestActivity extends Activity {
 	
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

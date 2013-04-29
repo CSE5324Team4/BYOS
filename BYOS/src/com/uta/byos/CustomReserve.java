@@ -1,5 +1,10 @@
 package com.uta.byos;
 
+/**
+ * An extension of Placeholder to allow the user to more accurately portray it's appearance in GameTest and to allow further
+ * customization
+ */
+
 import java.util.ArrayList;
 
 import android.content.res.Resources;
@@ -49,9 +54,22 @@ public class CustomReserve extends Placeholder {
 		}
 	}
 	
+	/**
+	 * Determines whether or not the user's tap was on the card that is on top of the "Deck"
+	 * @param x	X-Coordinate of the tap
+	 * @param y	Y-Coordinate of the tap
+	 * @return	Whether or not the coordinates are within the bounds of the top "card"
+	 */
+	
 	public boolean isTopOfStack(int x, int y){
 		return topOfStack.contains(x, y);
 	}
+	
+	/**
+	 * Adds cards to the stack
+	 * @param i		Number of cards to be added
+	 * @param in	Whether or not the cards are face up
+	 */
 	
 	public void addCards(int i, boolean in){
 		for(int j = 0; j<i; j++)

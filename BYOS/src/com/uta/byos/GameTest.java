@@ -13,21 +13,34 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+/**
+ * This class is used for actual gameplay (or testing)
+ * @author Matthew Waller
+ *
+ */
+
 public class GameTest extends View {
 
 	private Paint mCanvasPaint;
 	private ArrayList<Card> mCards = new ArrayList<Card>();
+	/** The dimensions GameTest instance resides within  */
 	private Rect mScreenSize = new Rect();
+	/** The dimensions for each card*/
 	private Rect mCardSize = new Rect();
+	/** The decks */
 	private ArrayList<Deck> mDecks = new ArrayList<Deck>();
 	private boolean mUseCache;
+	/** Whether or not the game uses foundations (e.g. Klondike) */
 	private boolean foundPres = false;
 	private Bitmap mCacheBitmap;
+	/** The card being moved about by the user */
 	private Card mActiveCard;
 	private String tableBuild;
 	private int cardXCap;
 	private int cardYCap;
+	/** The maximum amount of cards that can be moved at any time */
 	private int limit;
+	/** The rule book used during gameplay */
 	private String ruleBook = "b1ff0";
 
 	public GameTest(Context context) {
@@ -235,11 +248,13 @@ public class GameTest extends View {
 		}
 	}
 	
-	/*
+	/**
 	 * Reads input sent by Intent to TestActivity and finally to this class
 	 * @param	layout	A string containing the coordinates and types for each deck in the game
 	 * @param	inputR	A string that creates the ruleBook for the app to interpret
 	 * @param	lim		An integer that limits the number of cards that can be moved
+	 * @see				Intent
+	 * @see				GameBuilder#toString()
 	 */
 
 	public void constructFromInput(String layout, String inputR, int lim){
@@ -272,7 +287,7 @@ public class GameTest extends View {
 			mActiveCard.doDraw(canvas);
 		}
 	}
-	/*
+	/**
 	 * Based on Tero's original algorithm
 	 * @see TableauView enableCache
 	 */
@@ -345,11 +360,12 @@ public class GameTest extends View {
 
 	}
 	
-	/*
+	/**
 	 * Checks to see whether the card is movable
 	 * @param	card	The card and those on top of it the user is trying to move
 	 * @param	limit2	The limit to how many cards can be moved
 	 * @return			Whether or not the card(s) can be moved
+	 * @see				ruleBook
 	 */
 
 	private boolean cardIsMoveable(Card card, int limit2) {
@@ -416,7 +432,7 @@ public class GameTest extends View {
 		return false;
 	}
 	
-	/*
+	/**
 	 * Finds the deck under the user's tap
 	 * @param x, y	Coordinates of the user's tap
 	 * @return		The deck under the user's tap
@@ -429,7 +445,7 @@ public class GameTest extends View {
 		return null;
 	}
 	
-	/*
+	/**
 	 * Based on tero's original algorithm
 	 * @see TableauView#handleCardMove
 	 */
@@ -487,7 +503,7 @@ public class GameTest extends View {
 		mActiveCard = null;
 	}
 	
-	/*
+	/**
 	 * Removes cards from Tableau if they form a complete pile and no foundations are present
 	 * @param base	The card most recently added
 	 */
@@ -505,7 +521,7 @@ public class GameTest extends View {
 			scan.removeCard(base);}
 	}
 	
-	/*
+	/**
 	 * This function is called when there is no waste pile present
 	 * @param stock	The deck currently being dealt to
 	 */
@@ -523,7 +539,7 @@ public class GameTest extends View {
 				to.addCard(stock, draw, false);}		
 	}
 	
-	/*
+	/**
 	 * Determines whether or not an attempted buildup is valid
 	 * @param card	The card being moved
 	 * @param from	The deck card is coming from
@@ -575,7 +591,7 @@ public class GameTest extends View {
 		return true;
 	}
 	
-	/*
+	/**
 	 * Same as acceptCardMove, has its own function for modularity
 	 * @param movedCard	Card being moved
 	 * @param toCard	Card movedCard is being placed on top of
