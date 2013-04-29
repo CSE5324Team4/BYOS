@@ -41,15 +41,13 @@ public class GameBuilder extends View {
     private boolean itos = false;
 
     private Rect mCardSize = new Rect();
-    private int cardXCap;
-    private int cardYCap;
     private int alloc = 1;
     private int initX;
     private int initY;
     private int mCardCap;
     private Paint textP = new Paint();
     private String sType;
-    private String rP = "D";
+    private String resUpOrDown = "D";
     private Paint typeP = new Paint();
     private Paint whitewash = new Paint();
     private int deckSize;
@@ -181,17 +179,19 @@ public class GameBuilder extends View {
                     canvas.drawRect(sizeBack, whitewash);
                     canvas.drawText(String.valueOf(alloc), mScreenSize.width()*3/4, mScreenSize.height()*7/8, textP);
                     canvas.drawText(sType, mScreenSize.width()/4, mScreenSize.height()*7/8, textP);
-                    canvas.drawText(rP, mScreenSize.width()/2, mScreenSize.height()*7/8, textP);
+                    canvas.drawText(resUpOrDown, mScreenSize.width()/2, mScreenSize.height()*7/8, textP);
                     canvas.drawBitmap(posBit, posRect.left, posRect.top, null);
                     canvas.drawBitmap(negBit, negRect.left, negRect.top, null);
                     
             }
             if (mActiveStack != null) {
                 mActiveStack.doDraw(canvas);}
-           
-
     }
     
+    /*
+     * Used to set deck size on construction
+     * @param in	Number of 52 card decks used in the game being constructed
+     */
     public void setDeckSize(int in){
     	if(in == deckSize)
     		return;
@@ -278,11 +278,11 @@ public class GameBuilder extends View {
     					break;
     				}
     			}else if(faceUpBack.contains(x, y)){
-    				switch(rP.charAt(0)){
+    				switch(resUpOrDown.charAt(0)){
     				case 'D':
-    					rP = "U"; break;
+    					resUpOrDown = "U"; break;
     				case 'U':
-    					rP = "D"; break;
+    					resUpOrDown = "D"; break;
     				}
     			}else if(Math.abs(y - mScreenSize.height()*7/8) > mCardSize.height())
     				try{
@@ -339,7 +339,7 @@ public class GameBuilder extends View {
     	case 'R':
         	main.setSize(main.getSize() - s);
     		places.add(new CustomReserve(x-mCardSize.width()/2, y-mCardSize.height()/2, s, mCardSize.height(), mCardSize.width(),
-    				getResources(), rP.equals("U")));
+    				getResources(), resUpOrDown.equals("U")));
     		return;
     	case 'F':
     		s = 0;
@@ -352,6 +352,12 @@ public class GameBuilder extends View {
     	places.add(new Placeholder(x-mCardSize.width()/2, y-mCardSize.height()/2, s, mCardSize.height(), mCardSize.width(), set,
     			getResources()));
     }
+	
+	/*
+	 * Determines whether or not to remove a placeholder based where the user tapped the screen
+	 * @param x,y	Coordinates of the user's tap
+	 * @see			itos
+	 */
 	
 	private void addCardsOrRemove(int x, int y) {
     	Rect bounds;
@@ -372,7 +378,7 @@ public class GameBuilder extends View {
     	case 1:
     		if(alloc < index.getSize()){
     			index.setSize(index.getSize() - alloc);
-    			switch(rP.charAt(0)){
+    			switch(resUpOrDown.charAt(0)){
     			case 'U':
     				((CustomReserve) mActiveStack).addCards(alloc, true); break;
     			case 'D':
@@ -424,20 +430,11 @@ public class GameBuilder extends View {
     	return adj*mCardSize.height() + mCardSize.height()/2;
     }
     
-    private void removeUnderTouch(int x, int y){
-    	Placeholder index;
-    	int dec;
-    	for(int i = 0; i < places.size(); i++){
-    		index = places.get(i);
-    		dec = index.getSize();
-    		if(index.isUnderTouch(x, y) && i != 0){
-    			index = places.get(0);
-    			index.setSize(index.getSize() + dec);
-    			places.set(0, index);
-    			places.remove(i);
-    			break;
-    		}}
-    }
+    /*
+     * (non-Javadoc)
+     * Used when constructing GameTest
+     * @see android.view.View#toString()
+     */
     
     @Override
     public String toString(){

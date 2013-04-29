@@ -234,6 +234,13 @@ public class GameTest extends View {
 			mDecks.add(tar);
 		}
 	}
+	
+	/*
+	 * Reads input sent by Intent to TestActivity and finally to this class
+	 * @param	layout	A string containing the coordinates and types for each deck in the game
+	 * @param	inputR	A string that creates the ruleBook for the app to interpret
+	 * @param	lim		An integer that limits the number of cards that can be moved
+	 */
 
 	public void constructFromInput(String layout, String inputR, int lim){
 		tableBuild = layout;
@@ -337,6 +344,13 @@ public class GameTest extends View {
 		return false;
 
 	}
+	
+	/*
+	 * Checks to see whether the card is movable
+	 * @param	card	The card and those on top of it the user is trying to move
+	 * @param	limit2	The limit to how many cards can be moved
+	 * @return			Whether or not the card(s) can be moved
+	 */
 
 	private boolean cardIsMoveable(Card card, int limit2) {
 		// TODO Auto-generated method stubint tV = toCard.mCardValue;
@@ -401,6 +415,12 @@ public class GameTest extends View {
 				}}
 		return false;
 	}
+	
+	/*
+	 * Finds the deck under the user's tap
+	 * @param x, y	Coordinates of the user's tap
+	 * @return		The deck under the user's tap
+	 */
 
 	private Deck getDeckUnderTouch(int x, int y) {
 		for (Deck deck : mDecks) 
@@ -408,6 +428,11 @@ public class GameTest extends View {
 				return deck;
 		return null;
 	}
+	
+	/*
+	 * Based on tero's original algorithm
+	 * @see TableauView#handleCardMove
+	 */
 
 	private void handleCardMove(int x, int y) {
 		Deck fromDeck = null;
@@ -457,17 +482,15 @@ public class GameTest extends View {
 				for (int i = waste.mCards.size()-1; i >= 0; i--) {
 					card = waste.mCards.get(i);
 					card.mTurned = false;
-					toDeck.addCard(waste, card, true);}
-//				for (int i = 0; i < toDeck.mCards.size(); i++) {
-//					card = toDeck.mCards.get(i);
-//					waste.addCard(toDeck, card, true); i--;}
-//				for (int i = 0; i < waste.mCards.size(); i++) {
-//					card = waste.mCards.get(i);
-//					toDeck.addCard(waste, card, true); i--;}
-			}
+					toDeck.addCard(waste, card, true);}}
 		}
 		mActiveCard = null;
 	}
+	
+	/*
+	 * Removes cards from Tableau if they form a complete pile and no foundations are present
+	 * @param base	The card most recently added
+	 */
 	
 	private void removeIfComplete(Card base){
 		Deck scan = base.mOwnerDeck;
@@ -479,8 +502,13 @@ public class GameTest extends View {
 				base = scan.mCards.get(scan.mCards.indexOf(base)-1);
 				if(old != base.mCardValue - 1 || !base.mTurned)
 					return;}
-			mDecks.remove(scan);}
+			scan.removeCard(base);}
 	}
+	
+	/*
+	 * This function is called when there is no waste pile present
+	 * @param stock	The deck currently being dealt to
+	 */
 	
 	private void dealToTableau(Deck stock){
 		Card draw;
@@ -494,6 +522,14 @@ public class GameTest extends View {
 				draw.mTurned = true;
 				to.addCard(stock, draw, false);}		
 	}
+	
+	/*
+	 * Determines whether or not an attempted buildup is valid
+	 * @param card	The card being moved
+	 * @param from	The deck card is coming from
+	 * @param to	The deck card is being moved to
+	 * @return		Whether or not the move is valid	
+	 */
 
 	private boolean acceptCardMove(Deck from, Deck to, Card card) {
 		Card topOfThisCard=null;
@@ -538,6 +574,15 @@ public class GameTest extends View {
 
 		return true;
 	}
+	
+	/*
+	 * Same as acceptCardMove, has its own function for modularity
+	 * @param movedCard	Card being moved
+	 * @param toCard	Card movedCard is being placed on top of
+	 * @return			Whether or not the move is valid
+	 * @see	ruleBook
+	 * @see	acceptCardMove
+	 */
 
 	private boolean checkTableauMove(Card movedCard, Card toCard){
 		int tV = toCard.mCardValue;
