@@ -518,7 +518,7 @@ public class GameTest extends View {
 				if (!checkTableauMove(card, topOfThisCard))
 					return false;
 			} else if (to.mDeckType == Deck.DeckType.ETarget) {
-				if (card.mCardValue != topOfThisCard.mCardValue + 1)
+				if (card.mCardValue != topOfThisCard.mCardValue + 1 || card.mCardLand != topOfThisCard.mCardLand)
 					return false;
 			}
 		} else {
