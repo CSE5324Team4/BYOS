@@ -460,7 +460,7 @@ public class GameBuilder extends View {
     
     /**
      * Creates the initial size of the main waste pile at startup
-     * @param in
+     * @param in	Number of 52 card decks to be used
      */
 
 	public void initDeckSize(int in) {

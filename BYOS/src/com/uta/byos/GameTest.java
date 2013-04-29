@@ -434,8 +434,9 @@ public class GameTest extends View {
 	
 	/**
 	 * Finds the deck under the user's tap
-	 * @param x, y	Coordinates of the user's tap
-	 * @return		The deck under the user's tap
+	 * @param x	X-coordinate of the user's tap
+	 * @param y Y-coordinate of the user's tap
+	 * @return	The deck under the user's tap
 	 */
 
 	private Deck getDeckUnderTouch(int x, int y) {

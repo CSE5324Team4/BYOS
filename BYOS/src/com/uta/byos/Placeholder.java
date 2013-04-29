@@ -88,7 +88,8 @@ public class Placeholder {
 	}
 	/**
 	 * Sets the position of a deck in GameTest
-	 * @param x, y	Coordinates
+	 * @param x	X-coordinate
+	 * @param y Y-coordinate
 	 * @see TableauView#setPos
 	 */
 
