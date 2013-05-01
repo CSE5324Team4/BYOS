@@ -476,8 +476,8 @@ public class GameTest extends View {
 					// Accept card move or not?
 					if (acceptCardMove(fromDeck, toDeck, mActiveCard)) {
 						toDeck.addCard(fromDeck, mActiveCard, topOfOtherCards);
-						if(!foundPres)
-							removeIfComplete(mActiveCard);
+						//if(!foundPres)
+							//removeIfComplete(mActiveCard);
 						fromDeck.revealTopCard();
 					} else {
 						mActiveCard.cancelMove(true);
