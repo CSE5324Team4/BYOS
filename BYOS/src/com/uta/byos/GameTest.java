@@ -1,10 +1,13 @@
 package com.uta.byos;
 
+import java.util.LinkedList;
+import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.ArrayList;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -33,6 +36,10 @@ public class GameTest extends View {
 	/** Whether or not the game uses foundations (e.g. Klondike) */
 	private boolean foundPres = false;
 	private Bitmap mCacheBitmap;
+	private Bitmap undoBit = BitmapFactory.decodeResource(getResources(), R.raw.undo_arrow);
+	private Bitmap redoBit = BitmapFactory.decodeResource(getResources(), R.raw.redo_arrow);
+	private Rect undoRect = new Rect();
+	private Rect redoRect = new Rect();
 	/** The card being moved about by the user */
 	private Card mActiveCard;
 	private String tableBuild;
@@ -42,6 +49,8 @@ public class GameTest extends View {
 	private int limit;
 	/** The rule book used during gameplay */
 	private String ruleBook = "b1ff0";
+	private LinkedList<Move> undoStack = new LinkedList<Move>();
+	private LinkedList<Move> redoStack = new LinkedList<Move>();
 
 	public GameTest(Context context) {
 		super(context);
@@ -74,11 +83,26 @@ public class GameTest extends View {
 		setClickable(true);
 
 	}
-
-	//    @Override
-	//    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec){
-	//    	mCardSize.set(0, 0, widthMeasureSpec, (int) (widthMeasureSpec * 1.5));
-	//    }
+	
+	private class Move{
+		Deck from;
+		Deck to;
+		Card moved;
+		boolean fTurned;
+		boolean bTurned;
+		boolean aTurned;
+		Move(Deck from, Deck to, Card move){
+			this.from	= from;
+			this.to		= to;
+			moved		= move;
+			bTurned		= move.mTurned;
+			try{
+				fTurned	= from.mCards.get(from.mCards.indexOf(move) - 1).mTurned;
+			}catch(IndexOutOfBoundsException e){
+				fTurned	= false;
+			}
+		}
+	}
 
 
 
@@ -246,6 +270,9 @@ public class GameTest extends View {
 					tar.addCard(c, waste);}}
 			mDecks.add(tar);
 		}
+		undoRect = new Rect(0, mScreenSize.bottom-undoBit.getHeight(), undoBit.getWidth(), mScreenSize.bottom);
+		redoRect = new Rect(mScreenSize.right-redoBit.getWidth(), mScreenSize.bottom-redoBit.getHeight(), mScreenSize.right,
+				mScreenSize.bottom);
 	}
 	
 	/**
@@ -281,6 +308,9 @@ public class GameTest extends View {
 				deck.doDraw(canvas);
 			}
 		}
+		
+		canvas.drawBitmap(undoBit, 0, mScreenSize.bottom-undoBit.getHeight(), mCanvasPaint);
+		canvas.drawBitmap(redoBit, mScreenSize.right-redoBit.getWidth(), mScreenSize.bottom-redoBit.getHeight(), mCanvasPaint);
 
 		// Draw active card last
 		if (mActiveCard != null) {
@@ -375,7 +405,8 @@ public class GameTest extends View {
 		boolean mov;
 		if(limit2 != -1 && limit2 == 0)
 			return false;
-		if(card.mParentCard == null)
+		if(card.mParentCard == null || card.mOwnerDeck.mDeckType == Deck.DeckType.EWaste1
+				|| card.mOwnerDeck.mDeckType == Deck.DeckType.EWaste2)
 			return true;
 		else if(card.mTurned){
 			int pV = card.mParentCard.mCardValue;
@@ -462,7 +493,10 @@ public class GameTest extends View {
 			if (fromDeck.mDeckType == Deck.DeckType.EWaste1) {
 				for(Deck to : mDecks)
 					if(to.mDeckType == Deck.DeckType.EWaste2){
+						push(fromDeck, to, mActiveCard);
+						mActiveCard.mTurned = true;
 						to.addCard(fromDeck, mActiveCard, topOfOtherCards);
+						afterPush(mActiveCard);
 						flag = true;
 						break;}
 				if(!flag)
@@ -475,7 +509,9 @@ public class GameTest extends View {
 					}
 					// Accept card move or not?
 					if (acceptCardMove(fromDeck, toDeck, mActiveCard)) {
+						push(fromDeck, toDeck, mActiveCard);
 						toDeck.addCard(fromDeck, mActiveCard, topOfOtherCards);
+						afterPush(mActiveCard);
 						//if(!foundPres)
 							//removeIfComplete(mActiveCard);
 						fromDeck.revealTopCard();
@@ -498,8 +534,15 @@ public class GameTest extends View {
 				Card card = null;
 				for (int i = waste.mCards.size()-1; i >= 0; i--) {
 					card = waste.mCards.get(i);
+					push(waste, toDeck, card);
 					card.mTurned = false;
-					toDeck.addCard(waste, card, true);}}
+					toDeck.addCard(waste, card, true);
+					afterPush(card);}}
+		} else {
+			if(undoRect.contains(x, y))
+				undo();
+			else if(redoRect.contains(x, y))
+				redo();
 		}
 		mActiveCard = null;
 	}
@@ -536,8 +579,10 @@ public class GameTest extends View {
 				}catch(IndexOutOfBoundsException ioobe){
 					return;
 				}
+				push(stock, to, draw);
 				draw.mTurned = true;
-				to.addCard(stock, draw, false);}		
+				to.addCard(stock, draw, false);
+				afterPush(draw);}		
 	}
 	
 	/**
@@ -588,7 +633,6 @@ public class GameTest extends View {
 					&& card.mCardValue != Integer.parseInt(ruleBook.substring(5, 6), 14)))
 				return false;
 		}
-
 		return true;
 	}
 	
@@ -669,7 +713,69 @@ public class GameTest extends View {
 			return false;
 	}
 	
+	private void undo(){
+		Move move;
+		try{
+			move = undoStack.pop();
+		}catch(NoSuchElementException e){
+			return;
+		}
+		move.from.addCard(move.to, move.moved, move.from.mDeckType != Deck.DeckType.ESource);
+		int movedIndex = move.from.mCards.indexOf(move.moved);
+		try{
+			Card stackedOn = move.from.mCards.get(movedIndex - 1);
+			stackedOn.mTurned = move.fTurned;
+		}catch(IndexOutOfBoundsException e){}
+		redoStack.push(move);
+		move.moved.mTurned = move.bTurned;
+//		if(move.from.mDeckType == Deck.DeckType.EWaste1){
+//			move.moved.mTurned = false;
+//		}else if(move.from.mDeckType == Deck.DeckType.EWaste2 && move.to.mDeckType == Deck.DeckType.EWaste1){
+//			move.moved.mTurned = true;
+//		}
+		Move next = undoStack.peekFirst();
+		if(next == null)
+			return;
+		if((move.from.mDeckType == Deck.DeckType.EWaste1 && move.to.mDeckType == Deck.DeckType.ESource)
+				|| (move.from.mDeckType == Deck.DeckType.EWaste2 && move.to.mDeckType == Deck.DeckType.EWaste1)
+				&& (next.from.mDeckType == Deck.DeckType.EWaste1 && next.to.mDeckType == Deck.DeckType.ESource)
+				|| (next.from.mDeckType == Deck.DeckType.EWaste2 && next.to.mDeckType == Deck.DeckType.EWaste1))
+				undo();
+	}
 	
+	private void redo(){
+		Move move;
+		try{
+			move = redoStack.pop();
+		}catch(NoSuchElementException e){
+			return;
+		}
+		move.to.addCard(move.from, move.moved, move.to.mDeckType != Deck.DeckType.ESource);
+		move.moved.mTurned = move.aTurned;
+		undoStack.push(move);
+		Move next = redoStack.peekFirst();
+		if(move.from.mDeckType == Deck.DeckType.ESource)
+			move.from.revealTopCard();
+//		if(move.to.mDeckType == Deck.DeckType.EWaste2)
+//			move.moved.mTurned = true;
+		if(next == null)
+			return;
+		if(move.from.mDeckType == Deck.DeckType.EWaste1
+				|| (move.from.mDeckType == Deck.DeckType.EWaste2 && move.to.mDeckType == Deck.DeckType.EWaste1)
+				&& next.from.mDeckType == Deck.DeckType.EWaste1
+				|| (next.from.mDeckType == Deck.DeckType.EWaste2 && next.to.mDeckType == Deck.DeckType.EWaste1))
+				redo();
+	}
+	
+	private void push(Deck from, Deck to, Card moved){
+		undoStack.push(new Move(from, to, moved));
+		redoStack.clear();
+	}
+	
+	private void afterPush(Card moved){
+		Move top 	= undoStack.peekFirst();
+		top.aTurned = moved.mTurned;
+	}
 
 
 

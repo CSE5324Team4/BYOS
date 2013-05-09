@@ -97,19 +97,21 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int negative=0x7f050029;
         public static final int positive=0x7f05002a;
         public static final int recyclebin=0x7f05002b;
-        public static final int spade1=0x7f05002c;
-        public static final int spade10=0x7f05002d;
-        public static final int spade11=0x7f05002e;
-        public static final int spade12=0x7f05002f;
-        public static final int spade13=0x7f050030;
-        public static final int spade2=0x7f050031;
-        public static final int spade3=0x7f050032;
-        public static final int spade4=0x7f050033;
-        public static final int spade5=0x7f050034;
-        public static final int spade6=0x7f050035;
-        public static final int spade7=0x7f050036;
-        public static final int spade8=0x7f050037;
-        public static final int spade9=0x7f050038;
+        public static final int redo_arrow=0x7f05002c;
+        public static final int spade1=0x7f05002d;
+        public static final int spade10=0x7f05002e;
+        public static final int spade11=0x7f05002f;
+        public static final int spade12=0x7f050030;
+        public static final int spade13=0x7f050031;
+        public static final int spade2=0x7f050032;
+        public static final int spade3=0x7f050033;
+        public static final int spade4=0x7f050034;
+        public static final int spade5=0x7f050035;
+        public static final int spade6=0x7f050036;
+        public static final int spade7=0x7f050037;
+        public static final int spade8=0x7f050038;
+        public static final int spade9=0x7f050039;
+        public static final int undo_arrow=0x7f05003a;
     }
     public static final class string {
         public static final int app_name=0x7f080000;

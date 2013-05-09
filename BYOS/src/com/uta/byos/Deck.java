@@ -161,9 +161,9 @@ public class Deck {
 			return null;
 
 		// Turn card if needed
-		if (c != null && (mDeckType == Deck.DeckType.ESource || mDeckType == Deck.DeckType.EWaste1
-				|| mDeckType == Deck.DeckType.EWaste2))
-			c.mTurned = true;
+//		if (c != null && (mDeckType == Deck.DeckType.ESource || mDeckType == Deck.DeckType.EWaste1
+//				|| mDeckType == Deck.DeckType.EWaste2))
+//			c.mTurned = true;
 
 		return c;
 	}
@@ -193,5 +193,13 @@ public class Deck {
 			return;
 		Card top = mCards.get(index-1);
 		top.mTurned = true;
+	}
+	
+	public void flipTopCard(){
+		int index = mCards.size();
+		if(index == 0)
+			return;
+		Card top = mCards.get(index-1);
+		top.mTurned = !top.mTurned;
 	}
 }

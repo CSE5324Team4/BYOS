@@ -326,7 +326,7 @@ public class GameBuilder extends View {
     	Placeholder main;
     	main = places.get(0);
     	Deck.DeckType set;
-    	if(s > main.getSize())
+    	if(s > main.getSize() && type.charAt(0) == 'R')
     		throw new ArithmeticException("Not enough cards!");
     	switch(type.charAt(0)){
     	case 'S':
