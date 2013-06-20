@@ -195,6 +195,10 @@ public class Deck {
 		top.mTurned = true;
 	}
 	
+	public Card getTopCard(){
+		return mCards.get(mCards.size()-1);
+	}
+	
 	public void flipTopCard(){
 		int index = mCards.size();
 		if(index == 0)

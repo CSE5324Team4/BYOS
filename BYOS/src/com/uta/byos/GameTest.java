@@ -253,16 +253,17 @@ public class GameTest extends View {
 			}
 			tar = new Deck(set, Integer.parseInt(p[1]), Integer.parseInt(p[2]),mCardSize.width(),mCardSize.height());
 			if(set == Deck.DeckType.ESource){
-				for(int l=0; l < p[3].length(); l++){
-					c = mCards.remove(deal.nextInt(mCards.size()));
-					if(p[3].charAt(l) == 'U'){
-						c.mTurned = true;
-					}else{
-						c.mTurned = false;
+				if(p.length == 4){
+					for(int l=0; l < p[3].length(); l++){
+						c = mCards.remove(deal.nextInt(mCards.size()));
+						if(p[3].charAt(l) == 'U'){
+							c.mTurned = true;
+						}else{
+							c.mTurned = false;
+						}
+						tar.addCard(c, false);
 					}
-					tar.addCard(c, false);
-				}
-				tar.revealTopCard();}
+					tar.revealTopCard();}}
 			else{			
 				limit = Integer.parseInt(p[3]) - ((set == Deck.DeckType.ESource) ? 1 : 0);
 				for(int j = 0; j < limit; j++){
@@ -491,15 +492,17 @@ public class GameTest extends View {
 		if (mActiveCard != null) {
 			fromDeck = mActiveCard.mOwnerDeck;
 			if (fromDeck.mDeckType == Deck.DeckType.EWaste1) {
-				for(Deck to : mDecks)
+				for(Deck to : mDecks){
 					if(to.mDeckType == Deck.DeckType.EWaste2){
+						mActiveCard = fromDeck.getTopCard();
 						push(fromDeck, to, mActiveCard);
 						mActiveCard.mTurned = true;
 						to.addCard(fromDeck, mActiveCard, topOfOtherCards);
 						afterPush(mActiveCard);
-						flag = true;
-						break;}
-				if(!flag)
+						flag = true;}
+					if(to.mDeckType == Deck.DeckType.EWaste1 && to != fromDeck)
+						break;
+				}if(!flag)
 					dealToTableau(fromDeck);	
 			} else {
 				// Handle all other card move
@@ -512,8 +515,8 @@ public class GameTest extends View {
 						push(fromDeck, toDeck, mActiveCard);
 						toDeck.addCard(fromDeck, mActiveCard, topOfOtherCards);
 						afterPush(mActiveCard);
-						//if(!foundPres)
-							//removeIfComplete(mActiveCard);
+						if(!foundPres)
+							removeIfComplete(mActiveCard);
 						fromDeck.revealTopCard();
 					} else {
 						mActiveCard.cancelMove(true);
@@ -554,15 +557,29 @@ public class GameTest extends View {
 	
 	private void removeIfComplete(Card base){
 		Deck scan = base.mOwnerDeck;
+		Card topCard = scan.mCards.get(scan.mCards.size()-1);
 		int option = Integer.parseInt(ruleBook.substring(5,6));
+		if(topCard.mCardValue != option || scan.mCards.size() < 13)
+			return;
 		int old;
-		if(base.mCardValue == option || option == 0){
+		Card.CardLand oldCardLand;
+		if(topCard.mCardValue == option || option == 0){
+			base = topCard;
 			for(int i = 0; i < 12; i++){
 				old = base.mCardValue;
+				oldCardLand = base.mCardLand;
 				base = scan.mCards.get(scan.mCards.indexOf(base)-1);
-				if(old != base.mCardValue - 1 || !base.mTurned)
+				if(old != (base.mCardValue - 1)%13 || !base.mTurned || oldCardLand != base.mCardLand)
 					return;}
-			scan.removeCard(base);}
+			removeCards(base);}
+	}
+	
+	private void removeCards(Card base){
+		Deck scan = base.mOwnerDeck;
+		while(base != null){
+			scan.removeCard(base);
+			base = base.mParentCard;
+		}
 	}
 	
 	/**
